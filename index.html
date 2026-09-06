@@ -11,7 +11,7 @@
 html,body{margin:0;height:100%}
 body{
  --bg:#0f1512;--pnl:#18211b;--pnl2:#131b16;--line:#26332a;
- --acc:#3da35d;--acc2:#d2603a;--txt:#f2f0e6;--sub:#8fa094;
+ --acc:#3da35d;--acc2:#d2603a;--onacc:#0d1410;--txt:#f2f0e6;--sub:#8fa094;
  --me:#1c3327;--you:#20291f;--dsp:'Georgia','Times New Roman',serif;
  --stripe:linear-gradient(90deg,#009246 0 33%,#f4f5f0 33% 66%,#ce2b37 66% 100%);
  --bigbg:#fbf9f1;--bigtx:#1d3a26;--bigsub:#7a8b7e;
@@ -23,32 +23,53 @@ body{
 }
 body.es{
  --bg:#150f0d;--pnl:#211714;--pnl2:#1a120f;--line:#372520;
- --acc:#e8a33d;--acc2:#c1352f;--txt:#f8f0e4;--sub:#a89184;
+ --acc:#e8a33d;--acc2:#c1352f;--onacc:#2a1508;--txt:#f8f0e4;--sub:#a89184;
  --me:#3a2410;--you:#2a1614;--dsp:-apple-system,BlinkMacSystemFont,sans-serif;
  --stripe:linear-gradient(90deg,#aa151b 0 30%,#f1bf00 30% 70%,#aa151b 70% 100%);
  --bigbg:#fff9ee;--bigtx:#7a1d18;--bigsub:#9c8474;
 }
+body.pt{
+ --bg:#0c1219;--pnl:#141d27;--pnl2:#101822;--line:#22303d;
+ --acc:#3d8fd1;--acc2:#c8102e;--onacc:#fff;--txt:#eef3f8;--sub:#8b9cad;
+ --me:#16293a;--you:#1a2430;--dsp:'Georgia','Times New Roman',serif;
+ --stripe:linear-gradient(90deg,#046a38 0 40%,#da291c 40% 100%);
+ --bigbg:#f4f8fc;--bigtx:#123a5c;--bigsub:#7c8fa3;
+}
+body.en{
+ --bg:#101318;--pnl:#191d24;--pnl2:#14181e;--line:#2a3038;
+ --acc:#4f7cff;--acc2:#c0392b;--onacc:#fff;--txt:#f0f2f5;--sub:#98a2b0;
+ --me:#1c2740;--you:#1d2229;--dsp:-apple-system,BlinkMacSystemFont,sans-serif;
+ --stripe:linear-gradient(90deg,#012169 0 33%,#f5f5f5 33% 66%,#c8102e 66% 100%);
+ --bigbg:#f7f8fa;--bigtx:#1a2740;--bigsub:#7b8794;
+}
+body.ja{
+ --bg:#14100f;--pnl:#1e1817;--pnl2:#181312;--line:#332826;
+ --acc:#d64a3f;--acc2:#3f5b8c;--onacc:#fff;--txt:#f5f0ea;--sub:#a2938c;
+ --me:#33201d;--you:#231b1a;--dsp:'Hiragino Mincho ProN','Yu Mincho',serif;
+ --stripe:linear-gradient(90deg,#f5f2ee 0 38%,#bc002d 38% 62%,#f5f2ee 62% 100%);
+ --bigbg:#faf6f0;--bigtx:#8c1f2a;--bigsub:#998b82;
+}
 button{font-family:inherit;color:inherit;border:none;background:none}
 .stripe{height:4px;background:var(--stripe);flex:0 0 auto}
-header{padding:9px 12px 8px;background:var(--pnl);border-bottom:1px solid var(--line);flex:0 0 auto}
-.top{display:flex;gap:6px;align-items:center}
-.lb{flex:1;padding:11px 0;border-radius:12px;background:var(--pnl2);font-size:14.5px;font-weight:700;text-align:center;border:1px solid var(--line);transition:.2s}
-.lb.on{background:var(--acc);border-color:var(--acc);color:#0d1410}
-body.es .lb.on{color:#2a1508}
-.net{flex:0 0 auto;padding:8px 9px;border-radius:11px;font-size:11px;font-weight:800;background:#14301f;color:#5ad183;white-space:nowrap;line-height:1.15;text-align:center}
+header{padding:9px 10px 8px;background:var(--pnl);border-bottom:1px solid var(--line);flex:0 0 auto}
+.lg{display:flex;gap:4px}
+.lb{flex:1;padding:8px 0 7px;border-radius:11px;background:var(--pnl2);text-align:center;border:1px solid var(--line);transition:.2s;line-height:1.2}
+.lb .fl{display:block;font-size:16px}
+.lb .nm{display:block;font-size:9.5px;font-weight:800;margin-top:2px;opacity:.8}
+.lb.on{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
+.lb.on .nm{opacity:1}
+.tb{display:flex;gap:5px;margin-top:8px;align-items:stretch}
+.t{flex:1;padding:8px 0;border-radius:10px;background:var(--pnl2);font-size:12.5px;font-weight:600;color:var(--sub);text-align:center;line-height:1.3}
+.t.on{background:var(--acc);color:var(--onacc)}
+.t .tg{display:block;font-size:9px;font-weight:700;opacity:.85;margin-top:2px}
+.net{flex:0 0 auto;padding:7px 8px;border-radius:10px;font-size:10px;font-weight:800;background:#14301f;color:#5ad183;white-space:nowrap;line-height:1.2;text-align:center;align-self:stretch;display:flex;flex-direction:column;justify-content:center}
 .net.off{background:#3a1416;color:#ff8a8a}
-.tb{display:flex;gap:6px;margin-top:8px}
-.t{flex:1;padding:9px 0;border-radius:10px;background:var(--pnl2);font-size:13px;font-weight:600;color:var(--sub);text-align:center;line-height:1.3}
-.t.on{background:var(--acc);color:#0d1410}
-body.es .t.on{color:#2a1508}
-.t .tg{display:block;font-size:9.5px;font-weight:700;opacity:.85;margin-top:2px}
 main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px}
 .pg{display:none}.pg.on{display:block}
 .hint{color:var(--sub);font-size:14px;line-height:1.8;text-align:center;padding:22px 14px}
 .hint b{color:var(--txt)}
 .legend{margin-top:16px;font-size:12.5px;line-height:1.9;color:var(--sub);text-align:left;display:inline-block;background:var(--pnl2);padding:12px 14px;border-radius:12px;border:1px solid var(--line)}
-.okbar{padding:10px 12px;margin-bottom:12px;border-radius:12px;background:#14301f;border:1px solid #1e4a2f;font-size:12.5px;font-weight:700;color:#7fdca0;line-height:1.6}
-body.es .okbar{background:#2b2410;border-color:#4a3d16;color:#f0cd7a}
+.okbar{padding:10px 12px;margin-bottom:12px;border-radius:12px;background:#ffffff10;border:1px solid var(--line);font-size:12.5px;font-weight:700;color:var(--acc);line-height:1.6}
 .warn{display:none;padding:12px 13px;margin-bottom:12px;border-radius:13px;background:#3a1416;border:1px solid #5a2024;font-size:13px;font-weight:600;color:#ffb3b3;line-height:1.55}
 .warn.on{display:block}
 .warn button{margin-top:9px;width:100%;padding:11px;border-radius:10px;background:#5a2024;color:#ffd5d5;font-size:13px;font-weight:800}
@@ -63,8 +84,7 @@ body.es .okbar{background:#2b2410;border-color:#4a3d16;color:#f0cd7a}
 .acts{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;align-items:center}
 .chip{padding:7px 11px;border-radius:9px;background:#ffffff14;font-size:12.5px;font-weight:600;border:1px solid var(--line)}
 .chip.on{background:#7a5c12;color:#ffdf85}
-.tag{padding:5px 8px;border-radius:8px;font-size:10.5px;font-weight:800;background:#14301f;color:#6bcf90}
-body.es .tag{background:#2b2410;color:#eec776}
+.tag{padding:5px 8px;border-radius:8px;font-size:10.5px;font-weight:800;background:#ffffff12;color:var(--acc)}
 .wait .out{color:var(--sub);font-size:18px;font-weight:500}
 .err{background:#3a1416;border-color:#5a2024}
 .err .out{font-size:14.5px;color:#ffb3b3;font-weight:600;line-height:1.55;white-space:pre-line}
@@ -76,36 +96,32 @@ body.es .tag{background:#2b2410;color:#eec776}
 .pl{display:none}.pl.on{display:block}
 .pi{width:100%;text-align:left;padding:13px 14px;margin-bottom:7px;border-radius:12px;background:var(--pnl2);border:1px solid var(--line);border-left:3px solid var(--acc);display:block}
 .pi .ko{font-size:13px;color:var(--sub);margin-bottom:5px}
-.pi .fr{font-size:19px;font-weight:700;line-height:1.3}
+.pi .fr{font-size:19px;font-weight:700;line-height:1.35}
 .pi.adj{border-left-color:var(--acc);background:#ffffff08}
 .pi.usr{border-left-color:var(--acc2);background:#ffffff0a}
 .ubadge{display:inline-block;padding:3px 7px;border-radius:6px;background:var(--acc2);color:#fff;font-size:9.5px;font-weight:800;margin-right:6px;vertical-align:2px}
-.abadge{display:inline-block;padding:3px 7px;border-radius:6px;background:var(--acc);color:#0d1410;font-size:9.5px;font-weight:800;margin-right:6px;vertical-align:2px}
-body.es .abadge{color:#2a1508}
+.abadge{display:inline-block;padding:3px 7px;border-radius:6px;background:var(--acc);color:var(--onacc);font-size:9.5px;font-weight:800;margin-right:6px;vertical-align:2px}
 .addin{width:100%;padding:12px;margin-bottom:9px;border-radius:11px;background:#ffffff0d;border:1px dashed var(--line);font-size:13px;font-weight:700;color:var(--sub)}
 .stp{display:flex;gap:7px;align-items:center;margin-top:11px}
 .sb{width:44px;height:44px;border-radius:11px;background:#ffffff17;font-size:22px;font-weight:800;flex:0 0 auto;border:1px solid var(--line)}
 .sv{font-size:15px;font-weight:800;min-width:60px;text-align:center;color:var(--acc)}
-.spk{flex:1;height:44px;border-radius:11px;background:var(--acc);color:#0d1410;font-size:14px;font-weight:800}
-body.es .spk{color:#2a1508}
+.spk{flex:1;height:44px;border-radius:11px;background:var(--acc);color:var(--onacc);font-size:14px;font-weight:800}
 .srch,.ci{width:100%;padding:13px;border-radius:12px;background:var(--pnl2);color:var(--txt);font-size:16px;border:1px solid var(--line);margin-bottom:9px}
 .crow{display:flex;gap:7px;margin-bottom:9px}
-.csel{flex:1;padding:13px;border-radius:12px;background:var(--pnl2);color:var(--txt);font-size:15px;font-weight:700;border:1px solid var(--line);-webkit-appearance:none;appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--sub) 50%),linear-gradient(135deg,var(--sub) 50%,transparent 50%);background-position:calc(100% - 18px) 20px,calc(100% - 12px) 20px;background-size:6px 6px,6px 6px;background-repeat:no-repeat}
+.csel{flex:1;padding:13px;border-radius:12px;background:var(--pnl2);color:var(--txt);font-size:15px;font-weight:700;border:1px solid var(--line);-webkit-appearance:none;appearance:none}
 .cnew{width:52px;border-radius:12px;background:#ffffff14;border:1px solid var(--line);font-size:20px;font-weight:800;flex:0 0 auto}
 .clab{font-size:11.5px;color:var(--sub);font-weight:700;margin:2px 0 6px 3px}
-.cadd{width:100%;padding:14px;border-radius:12px;background:var(--acc);color:#0d1410;font-size:15px;font-weight:800;margin-bottom:6px}
-body.es .cadd{color:#2a1508}
+.cadd{width:100%;padding:14px;border-radius:12px;background:var(--acc);color:var(--onacc);font-size:15px;font-weight:800;margin-bottom:6px}
 .cghost{width:100%;padding:12px;border-radius:12px;background:#ffffff14;font-size:13.5px;font-weight:700;margin-bottom:14px;border:1px solid var(--line)}
 .mrow{display:flex;gap:7px;margin-bottom:7px}
 .mrow .pi{margin:0;flex:1}
 .del{width:44px;border-radius:12px;background:#33222a;color:#ff9d9d;font-size:17px;font-weight:700;flex:0 0 auto}
 footer{padding:10px 12px 12px;background:var(--pnl);border-top:1px solid var(--line);flex:0 0 auto}
 .mics{display:flex;gap:9px}
-.mic{flex:1;padding:14px 6px;border-radius:17px;background:var(--acc);color:#0d1410;text-align:center;border:1px solid transparent}
-body.es .mic{color:#2a1508}
+.mic{flex:1;padding:13px 5px;border-radius:17px;background:var(--acc);color:var(--onacc);text-align:center;border:1px solid transparent}
 .mic.o{background:var(--acc2);color:#fff}
-.mic .m1{font-size:15px;font-weight:800;line-height:1.25;display:block}
-.mic .m2{font-size:10.5px;font-weight:700;opacity:.78;display:block;margin-top:3px}
+.mic .m1{font-size:14px;font-weight:800;line-height:1.25;display:block}
+.mic .m2{font-size:10px;font-weight:700;opacity:.78;display:block;margin-top:3px}
 .tr{display:flex;gap:8px;margin-top:9px}
 .tr input{flex:1;padding:13px;border-radius:12px;background:var(--pnl2);color:var(--txt);border:1px solid var(--line);font-size:16px}
 .tr button{padding:0 18px;border-radius:12px;background:#ffffff14;font-weight:700;font-size:14px;border:1px solid var(--line)}
@@ -118,8 +134,7 @@ body.es .mic{color:#2a1508}
 .shs{font-size:12.5px;color:var(--sub);text-align:center;margin-bottom:14px;line-height:1.5}
 .shb{width:100%;text-align:left;padding:15px 14px;margin-bottom:8px;border-radius:13px;background:var(--pnl2);border:1px solid var(--line);font-size:16px;font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:8px}
 .shb .n{font-size:11.5px;color:var(--sub);font-weight:700;flex:0 0 auto}
-.shnew{width:100%;padding:15px;margin:6px 0 8px;border-radius:13px;background:var(--acc);color:#0d1410;font-size:15px;font-weight:800}
-body.es .shnew{color:#2a1508}
+.shnew{width:100%;padding:15px;margin:6px 0 8px;border-radius:13px;background:var(--acc);color:var(--onacc);font-size:15px;font-weight:800}
 .shc{width:100%;padding:14px;border-radius:13px;background:#ffffff14;font-size:14px;font-weight:700;border:1px solid var(--line)}
 #live{position:fixed;inset:0;z-index:90;background:var(--bg);display:none;flex-direction:column;padding:calc(env(safe-area-inset-top) + 18px) 20px calc(env(safe-area-inset-bottom) + 18px)}
 #live.on{display:flex}
@@ -127,7 +142,7 @@ body.es .shnew{color:#2a1508}
 .lvh{display:flex;align-items:center;gap:10px;justify-content:center;flex:0 0 auto}
 .dot{width:13px;height:13px;border-radius:50%;background:#ff3b4e;animation:bl .85s infinite}
 @keyframes bl{50%{opacity:.15;transform:scale(.75)}}
-.lvl{font-size:16px;font-weight:800;color:#ff9aa4;letter-spacing:.4px}
+.lvl{font-size:16px;font-weight:800;color:#ff9aa4;letter-spacing:.4px;text-align:center}
 .wave{display:flex;gap:5px;justify-content:center;align-items:flex-end;height:34px;margin-top:15px;flex:0 0 auto}
 .wave i{width:6px;background:var(--acc);border-radius:3px;animation:wv .9s infinite ease-in-out}
 .wave i:nth-child(1){height:14px;animation-delay:0s}
@@ -138,13 +153,13 @@ body.es .shnew{color:#2a1508}
 .wave i:nth-child(6){height:16px;animation-delay:.6s}
 @keyframes wv{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
 #lvtx{flex:1;display:flex;align-items:center;justify-content:center;overflow-y:auto;font-size:34px;font-weight:800;line-height:1.32;text-align:center;color:#fff;word-break:break-word;padding:16px 4px;text-shadow:0 2px 14px #000}
-#lvtx.idle{color:var(--sub);font-size:20px;font-weight:600;text-shadow:none}
+#lvtx.idle{color:var(--sub);font-size:19px;font-weight:600;text-shadow:none}
 #lvdone{flex:0 0 auto;padding:21px;border-radius:18px;background:#e04352;color:#fff;font-size:19px;font-weight:800;box-shadow:0 6px 22px #e0435240}
 .lvsub{flex:0 0 auto;text-align:center;font-size:12px;color:var(--sub);margin-top:10px;line-height:1.5}
 #big{position:fixed;inset:0;background:var(--bigbg);color:var(--bigtx);z-index:99;display:none;flex-direction:column;align-items:center;justify-content:center;padding:26px;text-align:center}
 #big.on{display:flex}
 #big:before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:var(--stripe)}
-#big .bt{font-size:42px;font-weight:800;line-height:1.25;font-family:var(--dsp)}
+#big .bt{font-size:40px;font-weight:800;line-height:1.28;font-family:var(--dsp)}
 #big .bs{margin-top:18px;font-size:16px;color:var(--bigsub)}
 #big .bc{position:absolute;top:calc(env(safe-area-inset-top) + 16px);right:18px;font-size:15px;color:var(--bigsub);font-weight:800}
 </style>
@@ -152,15 +167,18 @@ body.es .shnew{color:#2a1508}
 <body class="it">
 <div class="stripe"></div>
 <header>
-  <div class="top">
-    <button class="lb on" data-l="it">🇮🇹 이탈리아</button>
-    <button class="lb" data-l="es">🇪🇸 스페인</button>
-    <div class="net" id="net">🟢<br>온라인</div>
+  <div class="lg">
+    <button class="lb on" data-l="it"><span class="fl">🇮🇹</span><span class="nm">이탈리아</span></button>
+    <button class="lb" data-l="es"><span class="fl">🇪🇸</span><span class="nm">스페인</span></button>
+    <button class="lb" data-l="pt"><span class="fl">🇵🇹</span><span class="nm">포르투갈</span></button>
+    <button class="lb" data-l="en"><span class="fl">🇬🇧</span><span class="nm">영어</span></button>
+    <button class="lb" data-l="ja"><span class="fl">🇯🇵</span><span class="nm">일본</span></button>
   </div>
   <div class="tb">
     <button class="t on" data-p="talk">🎙 대화<span class="tg">🌐 인터넷</span></button>
     <button class="t" data-p="book">📖 문구집<span class="tg">✈️ 오프라인</span></button>
     <button class="t" data-p="mine">⭐ 내 문장<span class="tg">✈️ 오프라인</span></button>
+    <div class="net" id="net">🟢<br>온라인</div>
   </div>
 </header>
 <main>
@@ -203,7 +221,7 @@ body.es .shnew{color:#2a1508}
     <div class="clab">📂 어느 분류에 저장할까요?</div>
     <div class="crow">
       <select class="csel" id="msel"></select>
-      <button class="cnew" id="mnew" title="새 분류 만들기">＋</button>
+      <button class="cnew" id="mnew">＋</button>
     </div>
     <button class="cadd" id="madd">＋ 문구집에 추가</button>
     <button class="cghost" id="mtest">🔧 번역 서버 연결 테스트</button>
@@ -242,20 +260,34 @@ body.es .shnew{color:#2a1508}
 <div id="big"><button class="bc" id="bx">닫기 ✕</button><div class="bt" id="bt"></div><div class="bs" id="bs"></div></div>
 
 <script>
+/* ================= 언어 설정 ================= */
 const L={
- it:{n:'이탈리아어',f:'🇮🇹',c:'it-IT',s:'it',
-     btn:'Parla in italiano',lis:'TI ASCOLTO…',
-     idle:'Parli pure — tocchi il pulsante rosso quando ha finito',
-     done:'⏹ Ho finito',sub:'La sua voce sarà tradotta in coreano'},
- es:{n:'스페인어',f:'🇪🇸',c:'es-ES',s:'es',
-     btn:'Habla en español',lis:'LE ESCUCHO…',
-     idle:'Hable, por favor — pulse el botón rojo al terminar',
-     done:'⏹ He terminado',sub:'Su voz se traducirá al coreano'}
+ it:{i:1,n:'이탈리아어',f:'🇮🇹',c:'it-IT',s:'it',
+   btn:'Parla in italiano',lis:'TI ASCOLTO…',
+   idle:'Parli pure — tocchi il pulsante rosso quando ha finito',
+   done:'⏹ Ho finito',sub:'La sua voce sarà tradotta in coreano'},
+ es:{i:2,n:'스페인어',f:'🇪🇸',c:'es-ES',s:'es',
+   btn:'Habla en español',lis:'LE ESCUCHO…',
+   idle:'Hable, por favor — pulse el botón rojo al terminar',
+   done:'⏹ He terminado',sub:'Su voz se traducirá al coreano'},
+ pt:{i:3,n:'포르투갈어',f:'🇵🇹',c:'pt-PT',s:'pt',
+   btn:'Fale em português',lis:'ESTOU A OUVIR…',
+   idle:'Fale, por favor — toque no botão vermelho quando terminar',
+   done:'⏹ Já terminei',sub:'A sua voz será traduzida para coreano'},
+ en:{i:4,n:'영어',f:'🇬🇧',c:'en-US',s:'en',
+   btn:'Speak in English',lis:'LISTENING…',
+   idle:"Please speak — tap the red button when you're done",
+   done:"⏹ I'm done",sub:'Your speech will be translated into Korean'},
+ ja:{i:5,n:'일본어',f:'🇯🇵',c:'ja-JP',s:'ja',
+   btn:'日本語で話してください',lis:'お話しください…',
+   idle:'どうぞお話しください — 終わったら赤いボタンを押してください',
+   done:'⏹ 話し終わりました',sub:'あなたの声は韓国語に翻訳されます'}
 };
 let cur=localStorage.getItem('lang')||'it';
+if(!L[cur])cur='it';
 const $=i=>document.getElementById(i);
 
-/* ===== 연결 상태 ===== */
+/* ================= 연결 상태 ================= */
 function netUI(){const on=navigator.onLine;
   $('net').className='net'+(on?'':' off');
   $('net').innerHTML=on?'🟢<br>온라인':'🔴<br>오프라인';
@@ -263,7 +295,7 @@ function netUI(){const on=navigator.onLine;
 addEventListener('online',netUI);addEventListener('offline',netUI);netUI();
 $('gobook').onclick=()=>tab('book');
 
-/* ===== 음성 출력 ===== */
+/* ================= 음성 출력 ================= */
 let vs=[],ul=false;
 const lv=()=>{vs=window.speechSynthesis?speechSynthesis.getVoices():[]};lv();
 if(window.speechSynthesis)speechSynthesis.onvoiceschanged=lv;
@@ -274,7 +306,7 @@ function say(t,c,r){if(!window.speechSynthesis||!t)return;unlock();speechSynthes
   const v=vs.find(x=>x.lang.replace('_','-')===c)||vs.find(x=>x.lang.replace('_','-').startsWith(c.split('-')[0]));
   if(v)u.voice=v;setTimeout(()=>speechSynthesis.speak(u),60)}
 
-/* ===== 번역 + 캐시 ===== */
+/* ================= 번역 + 캐시 ================= */
 let cache={},fromCache=false;
 try{cache=JSON.parse(localStorage.getItem('tc'))||{}}catch(e){}
 function cSet(k,v){cache[k]=v;try{localStorage.setItem('tc',JSON.stringify(cache))}catch(e){}}
@@ -294,67 +326,164 @@ async function tr(t,f,to){
   throw new Error('번역 서버에 연결 못했어요.\n['+er.join(' / ')+']\n\n📖 문구집은 그대로 쓸 수 있어요.');
 }
 
-/* ===== 기본 문구집 ===== */
+/* ================= 문구집 (ko, it, es, pt, en, ja) ================= */
 const BOOK={
-'💬 인사·기본':[['안녕하세요 (낮)','Buongiorno','Buenos días'],['안녕하세요 (저녁)','Buonasera','Buenas tardes'],['감사합니다','Grazie mille','Muchas gracias'],['실례합니다','Mi scusi','Perdone'],['부탁합니다','Per favore','Por favor'],['영어 하세요?','Parla inglese?','¿Habla inglés?'],['한국에서 왔어요','Vengo dalla Corea','Soy de Corea']],
-'🍝 식당':[['메뉴판 주세요','Il menù, per favore','La carta, por favor'],['추천해 주세요','Cosa mi consiglia?','¿Qué me recomienda?'],['이거 주세요','Prendo questo','Quiero esto, por favor'],['계산서 주세요','Il conto, per favore','La cuenta, por favor'],['카드 되나요?','Posso pagare con la carta?','¿Puedo pagar con tarjeta?'],['포장해 주세요','Da portare via','Para llevar'],['화장실 어디예요?',"Dov'è il bagno?",'¿Dónde está el baño?']],
-'⚠️ 알레르기':[['견과류 알레르기가 있어요','Sono allergico alla frutta secca','Soy alérgico a los frutos secos'],['갑각류 알레르기가 있어요','Sono allergico ai crostacei','Soy alérgico al marisco'],['우유가 들어있나요?','Contiene latte?','¿Contiene leche?'],['채식주의자예요','Sono vegetariano','Soy vegetariano'],['매운 건 못 먹어요','Non posso mangiare piccante','No puedo comer picante']],
-'🚆 길·교통':[['여기 어떻게 가요?','Come arrivo qui?','¿Cómo llego aquí?'],['역이 어디예요?',"Dov'è la stazione?",'¿Dónde está la estación?'],['몇 시에 출발해요?','A che ora parte?','¿A qué hora sale?'],['걸어서 얼마나 걸려요?','Quanto ci vuole a piedi?','¿Cuánto se tarda andando?'],['여기서 세워 주세요','Si fermi qui','Pare aquí, por favor']],
-'🛍 쇼핑':[['얼마예요?','Quanto costa?','¿Cuánto cuesta?'],['너무 비싸요','È troppo caro','Es demasiado caro'],['깎아 주실 수 있나요?','Può farmi uno sconto?','¿Me puede hacer un descuento?'],['입어봐도 되나요?','Posso provarlo?','¿Me lo puedo probar?'],['그냥 구경중이에요','Sto solo guardando','Solo estoy mirando'],['영수증 주세요','La ricevuta, per favore','El recibo, por favor']],
-'🏨 숙소':[['체크인할게요','Vorrei fare il check-in','Quiero hacer el check-in'],['예약했어요','Ho una prenotazione','Tengo una reserva'],['와이파이 비번이 뭐예요?','Password del wi-fi?','¿Contraseña del wifi?'],['짐 맡길 수 있나요?','Posso lasciare i bagagli?','¿Puedo dejar las maletas?']],
-'🚑 응급':[['도와주세요!','Aiuto!','¡Ayuda!'],['경찰을 불러 주세요','Chiami la polizia','Llame a la policía'],['지갑을 도둑맞았어요','Mi hanno rubato il portafoglio','Me han robado la cartera'],['여권을 잃어버렸어요','Ho perso il passaporto','He perdido el pasaporte'],['몸이 안 좋아요','Non mi sento bene','No me siento bien'],['약국이 어디예요?',"Dov'è la farmacia?",'¿Dónde está la farmacia?']],
-'🗣 막힐 때':[['잘 못 알아들었어요','Non ho capito','No he entendido'],['천천히 말해 주세요','Più lentamente, per favore','Más despacio, por favor'],['한 번만 더요','Può ripetere?','¿Puede repetirlo?'],['여기에 적어 주세요','Può scriverlo qui?','¿Puede escribirlo aquí?'],['잠시만요','Un momento','Un momento'],['사진 찍어 주실 수 있나요?','Può farmi una foto?','¿Me puede hacer una foto?']]
+'💬 인사·기본':[
+['안녕하세요 (낮)','Buongiorno','Buenos días','Bom dia','Hello','こんにちは'],
+['안녕하세요 (저녁)','Buonasera','Buenas tardes','Boa noite','Good evening','こんばんは'],
+['감사합니다','Grazie mille','Muchas gracias','Muito obrigado','Thank you very much','ありがとうございます'],
+['실례합니다','Mi scusi','Perdone','Com licença','Excuse me','すみません'],
+['부탁합니다','Per favore','Por favor','Por favor','Please','お願いします'],
+['영어 하세요?','Parla inglese?','¿Habla inglés?','Fala inglês?','Do you speak English?','英語は話せますか？'],
+['한국에서 왔어요','Vengo dalla Corea','Soy de Corea','Sou da Coreia',"I'm from Korea",'韓国から来ました']],
+'🍝 식당':[
+['메뉴판 주세요','Il menù, per favore','La carta, por favor','A ementa, por favor','The menu, please','メニューをお願いします'],
+['추천해 주세요','Cosa mi consiglia?','¿Qué me recomienda?','O que recomenda?','What do you recommend?','おすすめは何ですか？'],
+['이거 주세요','Prendo questo','Quiero esto, por favor','Queria este, por favor',"I'll have this, please",'これをください'],
+['계산서 주세요','Il conto, per favore','La cuenta, por favor','A conta, por favor','The bill, please','お会計をお願いします'],
+['카드 되나요?','Posso pagare con la carta?','¿Puedo pagar con tarjeta?','Posso pagar com cartão?','Can I pay by card?','カードで払えますか？'],
+['포장해 주세요','Da portare via','Para llevar','Para levar, por favor','To take away, please','持ち帰りでお願いします'],
+['화장실 어디예요?',"Dov'è il bagno?",'¿Dónde está el baño?','Onde é a casa de banho?','Where is the restroom?','トイレはどこですか？']],
+'⚠️ 알레르기':[
+['견과류 알레르기가 있어요','Sono allergico alla frutta secca','Soy alérgico a los frutos secos','Sou alérgico a frutos secos',"I'm allergic to nuts",'ナッツアレルギーがあります'],
+['갑각류 알레르기가 있어요','Sono allergico ai crostacei','Soy alérgico al marisco','Sou alérgico a marisco',"I'm allergic to shellfish",'甲殻類アレルギーがあります'],
+['우유가 들어있나요?','Contiene latte?','¿Contiene leche?','Contém leite?','Does this contain milk?','これに牛乳は入っていますか？'],
+['채식주의자예요','Sono vegetariano','Soy vegetariano','Sou vegetariano',"I'm vegetarian",'ベジタリアンです'],
+['매운 건 못 먹어요','Non posso mangiare piccante','No puedo comer picante','Não posso comer picante',"I can't eat spicy food",'辛いものは食べられません']],
+'🚆 길·교통':[
+['여기 어떻게 가요?','Come arrivo qui?','¿Cómo llego aquí?','Como chego aqui?','How do I get here?','ここへはどう行きますか？'],
+['역이 어디예요?',"Dov'è la stazione?",'¿Dónde está la estación?','Onde é a estação?','Where is the station?','駅はどこですか？'],
+['몇 시에 출발해요?','A che ora parte?','¿A qué hora sale?','A que horas parte?','What time does it leave?','何時に出発しますか？'],
+['걸어서 얼마나 걸려요?','Quanto ci vuole a piedi?','¿Cuánto se tarda andando?','Quanto tempo a pé?','How long does it take on foot?','歩いてどのくらいかかりますか？'],
+['여기서 세워 주세요','Si fermi qui','Pare aquí, por favor','Pare aqui, por favor','Please stop here','ここで止めてください']],
+'🛍 쇼핑':[
+['얼마예요?','Quanto costa?','¿Cuánto cuesta?','Quanto custa?','How much is it?','いくらですか？'],
+['너무 비싸요','È troppo caro','Es demasiado caro','É muito caro',"It's too expensive",'高すぎます'],
+['깎아 주실 수 있나요?','Può farmi uno sconto?','¿Me puede hacer un descuento?','Pode fazer um desconto?','Can you give me a discount?','少し安くなりませんか？'],
+['입어봐도 되나요?','Posso provarlo?','¿Me lo puedo probar?','Posso experimentar?','Can I try it on?','試着してもいいですか？'],
+['그냥 구경중이에요','Sto solo guardando','Solo estoy mirando','Estou só a ver',"I'm just looking",'見ているだけです'],
+['영수증 주세요','La ricevuta, per favore','El recibo, por favor','O recibo, por favor','The receipt, please','レシートをください']],
+'🏨 숙소':[
+['체크인할게요','Vorrei fare il check-in','Quiero hacer el check-in','Queria fazer o check-in',"I'd like to check in",'チェックインをお願いします'],
+['예약했어요','Ho una prenotazione','Tengo una reserva','Tenho uma reserva','I have a reservation','予約しています'],
+['와이파이 비번이 뭐예요?','Password del wi-fi?','¿Contraseña del wifi?','Qual é a senha do wi-fi?',"What's the Wi-Fi password?",'Wi-Fiのパスワードは何ですか？'],
+['짐 맡길 수 있나요?','Posso lasciare i bagagli?','¿Puedo dejar las maletas?','Posso deixar as malas?','Can I leave my luggage?','荷物を預けられますか？']],
+'🚑 응급':[
+['도와주세요!','Aiuto!','¡Ayuda!','Socorro!','Help!','助けてください！'],
+['경찰을 불러 주세요','Chiami la polizia','Llame a la policía','Chame a polícia','Please call the police','警察を呼んでください'],
+['지갑을 도둑맞았어요','Mi hanno rubato il portafoglio','Me han robado la cartera','Roubaram-me a carteira','My wallet was stolen','財布を盗まれました'],
+['여권을 잃어버렸어요','Ho perso il passaporto','He perdido el pasaporte','Perdi o passaporte','I lost my passport','パスポートをなくしました'],
+['몸이 안 좋아요','Non mi sento bene','No me siento bien','Não me sinto bem',"I don't feel well",'体調が悪いです'],
+['약국이 어디예요?',"Dov'è la farmacia?",'¿Dónde está la farmacia?','Onde é a farmácia?','Where is the pharmacy?','薬局はどこですか？']],
+'🗣 막힐 때':[
+['잘 못 알아들었어요','Non ho capito','No he entendido','Não entendi',"I didn't understand",'わかりませんでした'],
+['천천히 말해 주세요','Più lentamente, per favore','Más despacio, por favor','Mais devagar, por favor','Please speak slowly','ゆっくり話してください'],
+['한 번만 더요','Può ripetere?','¿Puede repetirlo?','Pode repetir?','Could you repeat that?','もう一度お願いします'],
+['여기에 적어 주세요','Può scriverlo qui?','¿Puede escribirlo aquí?','Pode escrever aqui?','Could you write it here?','ここに書いてください'],
+['잠시만요','Un momento','Un momento','Um momento','One moment, please','少しお待ちください'],
+['사진 찍어 주실 수 있나요?','Può farmi una foto?','¿Me puede hacer una foto?','Pode tirar-me uma foto?','Could you take a photo of me?','写真を撮っていただけますか？']]
 };
 
-/* ===== 숫자 조절 문구 (분류별로 배치) ===== */
+/* ================= 숫자 조절 문구 ================= */
 const NIT=['','uno','due','tre','quattro','cinque','sei','sette','otto','nove','dieci','undici','dodici'];
 const NES=['','uno','dos','tres','cuatro','cinco','seis','siete','ocho','nueve','diez','once','doce'];
+const NPT=['','um','dois','três','quatro','cinco','seis','sete','oito','nove','dez','onze','doze'];
+const NEN=['','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve'];
+const JNIN=['','ひとり','ふたり','さんにん','よにん','ごにん','ろくにん','ななにん','はちにん','きゅうにん','じゅうにん','じゅういちにん','じゅうににん'];
+const JTSU=['','ひとつ','ふたつ','みっつ','よっつ','いつつ','むっつ','ななつ','やっつ','ここのつ','とお','じゅういっこ','じゅうにこ'];
+const JMAI=['','いちまい','にまい','さんまい','よんまい','ごまい','ろくまい','ななまい','はちまい','きゅうまい','じゅうまい','じゅういちまい','じゅうにまい'];
+const JHON=['','いっぽん','にほん','さんぼん','よんほん','ごほん','ろっぽん'];
+const JHAI=['','いっぱい','にはい','さんばい','よんはい','ごはい','ろっぱい','ななはい','はちはい'];
+const JMAE=['','いちにんまえ','ににんまえ','さんにんまえ','よにんまえ','ごにんまえ','ろくにんまえ','ななにんまえ','はちにんまえ','きゅうにんまえ','じゅうにんまえ','じゅういちにんまえ','じゅうににんまえ'];
+const JPAK=['','いっぱく','にはく','さんぱく','よんはく','ごはく','ろっぱく','ななはく','はっぱく','きゅうはく','じゅっぱく','じゅういっぱく','じゅうにはく','じゅうさんぱく','じゅうよんはく'];
+const JJI={1:'いちじ',2:'にじ',3:'さんじ',4:'よじ',5:'ごじ',6:'ろくじ',7:'しちじ',8:'はちじ',9:'くじ',10:'じゅうじ',11:'じゅういちじ',12:'じゅうにじ',13:'じゅうさんじ',14:'じゅうよじ',15:'じゅうごじ',16:'じゅうろくじ',17:'じゅうしちじ',18:'じゅうはちじ',19:'じゅうくじ',20:'にじゅうじ',21:'にじゅういちじ',22:'にじゅうにじ',23:'にじゅうさんじ'};
+
 const ADJ=[
 /* 🍝 식당 */
 {cat:'🍝 식당',u:'명',mn:1,mx:12,df:2,k:n=>n+'명 자리 부탁해요',
  it:n=>n==1?'Un tavolo per una persona, per favore':'Un tavolo per '+NIT[n]+', per favore',
- es:n=>n==1?'Una mesa para una persona, por favor':'Una mesa para '+NES[n]+', por favor'},
+ es:n=>n==1?'Una mesa para una persona, por favor':'Una mesa para '+NES[n]+', por favor',
+ pt:n=>n==1?'Uma mesa para uma pessoa, por favor':'Uma mesa para '+NPT[n]+', por favor',
+ en:n=>'A table for '+NEN[n]+', please',
+ ja:n=>JNIN[n]+'の席をお願いします'},
 {cat:'🍝 식당',u:'명',mn:1,mx:12,df:2,k:n=>'저희 '+n+'명이에요',
  it:n=>n==1?'Sono da solo':'Siamo in '+NIT[n],
- es:n=>n==1?'Vengo solo':'Somos '+NES[n]},
+ es:n=>n==1?'Vengo solo':'Somos '+NES[n],
+ pt:n=>n==1?'Estou sozinho':'Somos '+NPT[n],
+ en:n=>n==1?"I'm alone":'We are '+NEN[n],
+ ja:n=>n==1?'ひとりです':JNIN[n]+'です'},
 {cat:'🍝 식당',u:'인분',mn:1,mx:12,df:2,k:n=>n+'인분 주세요',
  it:n=>n==1?'Una porzione, per favore':NIT[n]+' porzioni, per favore',
- es:n=>n==1?'Una ración, por favor':NES[n]+' raciones, por favor'},
+ es:n=>n==1?'Una ración, por favor':NES[n]+' raciones, por favor',
+ pt:n=>n==1?'Uma dose, por favor':NPT[n]+' doses, por favor',
+ en:n=>n==1?'One portion, please':NEN[n]+' portions, please',
+ ja:n=>JMAE[n]+'お願いします'},
 {cat:'🍝 식당',u:'병',mn:1,mx:6,df:1,k:n=>'생수 '+n+'병 주세요',
  it:n=>n==1?"Una bottiglia d'acqua naturale, per favore":NIT[n]+" bottiglie d'acqua naturale, per favore",
- es:n=>n==1?'Una botella de agua sin gas, por favor':NES[n]+' botellas de agua sin gas, por favor'},
+ es:n=>n==1?'Una botella de agua sin gas, por favor':NES[n]+' botellas de agua sin gas, por favor',
+ pt:n=>n==1?'Uma garrafa de água sem gás, por favor':NPT[n]+' garrafas de água sem gás, por favor',
+ en:n=>n==1?'A bottle of still water, please':NEN[n]+' bottles of still water, please',
+ ja:n=>'お水を'+JHON[n]+'ください'},
 {cat:'🍝 식당',u:'잔',mn:1,mx:8,df:2,k:n=>'커피 '+n+'잔 주세요',
  it:n=>n==1?'Un caffè, per favore':NIT[n]+' caffè, per favore',
- es:n=>n==1?'Un café, por favor':NES[n]+' cafés, por favor'},
+ es:n=>n==1?'Un café, por favor':NES[n]+' cafés, por favor',
+ pt:n=>n==1?'Um café, por favor':NPT[n]+' cafés, por favor',
+ en:n=>n==1?'One coffee, please':NEN[n]+' coffees, please',
+ ja:n=>'コーヒーを'+JHAI[n]+'ください'},
 {cat:'🍝 식당',u:'시',mn:11,mx:23,df:19,k:n=>n+'시에 예약했어요',
  it:n=>'Ho una prenotazione alle '+n,
- es:n=>'Tengo una reserva a las '+n},
+ es:n=>'Tengo una reserva a las '+n,
+ pt:n=>'Tenho uma reserva para as '+n+' horas',
+ en:n=>'I have a reservation at '+n,
+ ja:n=>JJI[n]+'に予約しています'},
 /* 🚆 길·교통 */
 {cat:'🚆 길·교통',u:'장',mn:1,mx:12,df:2,k:n=>'표 '+n+'장 주세요',
  it:n=>n==1?'Un biglietto, per favore':NIT[n]+' biglietti, per favore',
- es:n=>n==1?'Un billete, por favor':NES[n]+' billetes, por favor'},
+ es:n=>n==1?'Un billete, por favor':NES[n]+' billetes, por favor',
+ pt:n=>n==1?'Um bilhete, por favor':NPT[n]+' bilhetes, por favor',
+ en:n=>n==1?'One ticket, please':NEN[n]+' tickets, please',
+ ja:n=>'きっぷを'+JMAI[n]+'ください'},
 {cat:'🚆 길·교통',u:'명',mn:1,mx:12,df:2,k:n=>'어른 '+n+'명 입장권이요',
  it:n=>n==1?'Un ingresso per adulto, per favore':NIT[n]+' ingressi per adulti, per favore',
- es:n=>n==1?'Una entrada para adulto, por favor':NES[n]+' entradas para adultos, por favor'},
+ es:n=>n==1?'Una entrada para adulto, por favor':NES[n]+' entradas para adultos, por favor',
+ pt:n=>n==1?'Uma entrada de adulto, por favor':NPT[n]+' entradas de adulto, por favor',
+ en:n=>n==1?'One adult ticket, please':NEN[n]+' adult tickets, please',
+ ja:n=>'おとな'+JMAI[n]+'お願いします'},
 {cat:'🚆 길·교통',u:'시',mn:5,mx:23,df:9,k:n=>n+'시 기차 있나요?',
  it:n=>"C'è un treno alle "+n+'?',
- es:n=>'¿Hay un tren a las '+n+'?'},
+ es:n=>'¿Hay un tren a las '+n+'?',
+ pt:n=>'Há um comboio às '+n+' horas?',
+ en:n=>'Is there a train at '+n+'?',
+ ja:n=>JJI[n]+'の電車はありますか？'},
 /* 🛍 쇼핑 */
 {cat:'🛍 쇼핑',u:'개',mn:1,mx:12,df:2,k:n=>'이거 '+n+'개 주세요',
  it:n=>'Ne vorrei '+NIT[n]+', per favore',
- es:n=>'Quiero '+NES[n]+', por favor'},
+ es:n=>'Quiero '+NES[n]+', por favor',
+ pt:n=>'Queria '+NPT[n]+', por favor',
+ en:n=>'I would like '+NEN[n]+', please',
+ ja:n=>'これを'+JTSU[n]+'ください'},
 {cat:'🛍 쇼핑',u:'유로',mn:5,mx:200,df:20,st:5,k:n=>n+'유로에 해주실 수 있나요?',
  it:n=>'Me lo fa a '+n+' euro?',
- es:n=>'¿Me lo deja en '+n+' euros?'},
+ es:n=>'¿Me lo deja en '+n+' euros?',
+ pt:n=>'Pode fazer por '+n+' euros?',
+ en:n=>'Could you do '+n+' euros?',
+ ja:n=>n+'ユーロにしてもらえますか？'},
 /* 🏨 숙소 */
 {cat:'🏨 숙소',u:'박',mn:1,mx:14,df:2,k:n=>n+'박 묵을 거예요',
  it:n=>n==1?'Resto una notte':'Resto '+(n<=12?NIT[n]:n)+' notti',
- es:n=>n==1?'Me quedo una noche':'Me quedo '+(n<=12?NES[n]:n)+' noches'},
+ es:n=>n==1?'Me quedo una noche':'Me quedo '+(n<=12?NES[n]:n)+' noches',
+ pt:n=>n==1?'Fico uma noite':'Fico '+(n<=12?NPT[n]:n)+' noites',
+ en:n=>n==1?"I'm staying one night":"I'm staying "+(n<=12?NEN[n]:n)+' nights',
+ ja:n=>JPAK[n]+'します'},
 {cat:'🏨 숙소',u:'개',mn:1,mx:8,df:2,k:n=>'수건 '+n+'개 주세요',
  it:n=>n==1?'Un asciugamano, per favore':NIT[n]+' asciugamani, per favore',
- es:n=>n==1?'Una toalla, por favor':NES[n]+' toallas, por favor'}
+ es:n=>n==1?'Una toalla, por favor':NES[n]+' toallas, por favor',
+ pt:n=>n==1?'Uma toalha, por favor':NPT[n]+' toalhas, por favor',
+ en:n=>n==1?'One towel, please':NEN[n]+' towels, please',
+ ja:n=>'タオルを'+JMAI[n]+'ください'}
 ];
 
+/* ================= 분류 ================= */
 const DEF=['⭐ 즐겨찾기','💬 인사·기본','🍝 식당','⚠️ 알레르기','🚆 길·교통','🛍 쇼핑','🏨 숙소','🚑 응급','🗣 막힐 때','📌 기타'];
 const OLDMAP={'🚆 교통':'🚆 길·교통'};
 function getCats(){
@@ -379,7 +508,6 @@ $('mnew').onclick=()=>{const v=newCat();if(v){fillSel(v);book($('srch').value);m
 $('msel').onchange=()=>localStorage.setItem('lastcat',$('msel').value);
 $('bknew').onclick=()=>{const v=newCat();if(v){fillSel(v);book($('srch').value);goAdd(v)}};
 
-/* 분류 선택 시트 */
 let pickCb=null;
 function pickCat(sub,cb){
   pickCb=cb;$('shs').textContent=sub||'';
@@ -398,7 +526,7 @@ $('shnew').onclick=()=>{const v=newCat();if(v){$('sheet').classList.remove('on')
 $('shc').onclick=()=>{$('sheet').classList.remove('on');pickCb=null};
 $('sheet').onclick=e=>{if(e.target.id=='sheet'){$('sheet').classList.remove('on');pickCb=null}};
 
-/* ===== 대화 ===== */
+/* ================= 대화 ================= */
 const log=$('log');
 function getH(){try{return JSON.parse(localStorage.getItem('hist'))||[]}catch(e){return[]}}
 function setH(a){localStorage.setItem('hist',JSON.stringify(a.slice(-250)))}
@@ -452,7 +580,7 @@ async function run(text,dir){
     pb.querySelector('.out').textContent='⚠️ '+e.message;
     pb.querySelector('.xb').onclick=()=>pb.remove()}}
 
-/* ===== 음성 인식 ===== */
+/* ================= 음성 인식 ================= */
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 let ing=false,curStop=null;
 function labels(){$('b2a').textContent=L[cur].btn;$('b2b').textContent=L[cur].f+' 상대가 말하기'}
@@ -495,7 +623,7 @@ $('b2').onclick=()=>listen('you');
 $('sd').onclick=()=>{const v=$('tx').value;$('tx').value='';$('tx').blur();run(v,'me')};
 $('tx').onkeydown=e=>{if(e.key=='Enter')$('sd').click()};
 
-/* ===== 행 만들기 ===== */
+/* ================= 행 ================= */
 function adjRow(a){
   let n=a.df;const step=a.st||1;
   const p=document.createElement('div');p.className='pi adj';
@@ -510,7 +638,7 @@ function adjRow(a){
   draw();return p}
 function builtRow(i){
   const p=document.createElement('button');p.className='pi';
-  const f=cur=='it'?i[1]:i[2];
+  const f=i[L[cur].i];
   p.innerHTML='<div class="ko"></div><div class="fr"></div>';
   p.querySelector('.ko').textContent=i[0];p.querySelector('.fr').textContent=f;
   p.onclick=()=>{say(f,L[cur].c,1);big(f,i[0])};return p}
@@ -524,12 +652,12 @@ function userRow(x){
   d.onclick=e=>{e.stopPropagation();delMine(x)};
   row.appendChild(p);row.appendChild(d);return row}
 
-/* ===== 내 문장 저장소 ===== */
+/* ================= 내 문장 ================= */
 function getMine(){let a=[];try{a=JSON.parse(localStorage.getItem('mine'))||[]}catch(e){}
   let fix=false;a.forEach(x=>{if(!x.cat){x.cat='📌 기타';fix=true}
     if(OLDMAP[x.cat]){x.cat=OLDMAP[x.cat];fix=true}});
   if(fix)localStorage.setItem('mine',JSON.stringify(a));return a}
-function setMine(a){localStorage.setItem('mine',JSON.stringify(a.slice(0,300)))}
+function setMine(a){localStorage.setItem('mine',JSON.stringify(a.slice(0,400)))}
 function addMine(ko,fr,cat){const a=getMine();a.unshift({ko:ko,fr:fr,lang:cur,cat:cat||'📌 기타'});setMine(a);
   book($('srch').value);mine()}
 function delMine(x){
@@ -539,7 +667,7 @@ function delMine(x){
 function goAdd(cat){tab('mine');fillSel(cat);localStorage.setItem('lastcat',cat);
   setTimeout(()=>{$('mk').focus();$('mk').scrollIntoView({block:'center'})},80)}
 
-/* ===== 문구집 ===== */
+/* ================= 문구집 ================= */
 function book(q){
   const w=$('bw');w.innerHTML='';q=(q||'').trim();
   const all=getMine().filter(x=>x.lang==cur);
@@ -575,7 +703,7 @@ function book(q){
   if(!w.children.length)w.innerHTML='<div class="hint">검색 결과가 없어요</div>'}
 $('srch').oninput=e=>book(e.target.value);
 
-/* ===== 내 문장 탭 ===== */
+/* ================= 내 문장 탭 ================= */
 function mine(){
   const w=$('mw'),all=getMine().filter(x=>x.lang==cur);w.innerHTML='';
   if(!all.length){w.innerHTML='<div class="hint">아직 추가한 문장이 없어요.<br><br>추가하면 <b>📖문구집 해당 분류</b>에<br>✏️ 표시로 함께 나타나요.<br><br>알레르기, 숙소 이름·주소,<br>자주 쓸 말을 미리 넣어두면 좋아요.</div>';return}
@@ -605,15 +733,15 @@ $('madd').onclick=async()=>{
 $('mtest').onclick=async()=>{
   $('mtest').textContent='확인 중…';
   try{const o=await tr('물 한 병 주세요','ko',L[cur].s);
-    alert('✅ 정상!\n\n결과: '+o+(fromCache?'\n\n(💾 저장된 값 — 오프라인 사용 가능)':'\n\n(🌐 서버에서 새로 번역)'))}
+    alert('✅ 정상! ('+L[cur].n+')\n\n결과: '+o+(fromCache?'\n\n(💾 저장된 값 — 오프라인 사용 가능)':'\n\n(🌐 서버에서 새로 번역)'))}
   catch(e){alert('❌ 실패\n\n'+e.message)}
   $('mtest').textContent='🔧 번역 서버 연결 테스트'};
 
-/* ===== 크게 보여주기 ===== */
+/* ================= 크게 보여주기 ================= */
 function big(m,s){$('bt').textContent=m;$('bs').textContent=s||'';$('big').classList.add('on')}
 $('bx').onclick=()=>$('big').classList.remove('on');
 
-/* ===== 탭 · 언어 ===== */
+/* ================= 탭 · 언어 ================= */
 function tab(name){
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
   $('p-'+name).classList.add('on');
