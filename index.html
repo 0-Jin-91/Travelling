@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="여행통역">
+<title>여행 통역기</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{background:#111318;color:#f2f4f8;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;display:flex;flex-direction:column;overflow:hidden;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+button{font-family:inherit;color:inherit;border:none;background:none}
+header{padding:10px 12px 8px;background:#171a21;border-bottom:1px solid #262b36}
+.lg{display:flex;gap:6px}
+.lb{flex:1;padding:11px 0;border-radius:12px;background:#232833;font-size:15px;font-weight:700;text-align:center}
+.lb.on{background:#2f7cf6}
+.tb{display:flex;gap:6px;margin-top:8px}
+.t{flex:1;padding:10px 0;border-radius:10px;background:#1d212a;font-size:14px;font-weight:600;color:#8d97a8;text-align:center}
+.t.on{background:#333a48;color:#fff}
+main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px}
+.pg{display:none}.pg.on{display:block}
+.hint{color:#7b8698;font-size:14px;line-height:1.8;text-align:center;padding:30px 14px}
+.hint b{color:#b9c3d4}
+.bub{margin-bottom:12px;padding:12px 14px;border-radius:16px;background:#1e2431;max-width:92%}
+.bub.me{margin-left:auto;background:#20344f}
+.src{font-size:13px;color:#8d97a8;margin-bottom:6px}
+.out{font-size:25px;font-weight:700;line-height:1.35;word-break:break-word}
+.acts{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.chip{padding:7px 11px;border-radius:9px;background:#2c3444;font-size:12.5px;font-weight:600}
+.wait .out{color:#7b8698;font-size:18px;font-weight:500}
+.err{background:#3a1f22}.err .out{font-size:15px;color:#ff9d9d;font-weight:600}
+.cat{width:100%;text-align:left;padding:15px 14px;margin-bottom:8px;border-radius:14px;background:#1e2431;font-size:16px;font-weight:700;display:flex;justify-content:space-between}
+.arw{color:#7b8698;font-size:13px;font-weight:500}
+.pl{display:none}.pl.on{display:block}
+.pi{width:100%;text-align:left;padding:13px 14px;margin-bottom:7px;border-radius:12px;background:#191e28;border-left:3px solid #2f7cf6}
+.pi .ko{font-size:13px;color:#94a0b3;margin-bottom:5px}
+.pi .fr{font-size:19px;font-weight:700;line-height:1.3}
+.srch{width:100%;padding:13px;margin-bottom:12px;border-radius:12px;background:#1e2431;color:#fff;font-size:16px;border:1px solid #2c3444}
+footer{padding:10px 12px 12px;background:#171a21;border-top:1px solid #262b36}
+.mics{display:flex;gap:9px}
+.mic{flex:1;padding:20px 6px;border-radius:17px;background:#2f7cf6;font-size:15.5px;font-weight:800;text-align:center;line-height:1.3}
+.mic.o{background:#3f4757}
+.mic.rec{background:#e04352;animation:p 1s infinite}
+@keyframes p{50%{opacity:.6}}
+.tr{display:flex;gap:8px;margin-top:9px}
+.tr input{flex:1;padding:13px;border-radius:12px;background:#232833;color:#fff;border:none;font-size:16px}
+.tr button{padding:0 18px;border-radius:12px;background:#3f4757;font-weight:700;font-size:14px}
+.st{text-align:center;font-size:12.5px;color:#7b8698;margin-top:8px;min-height:16px}
+#big{position:fixed;inset:0;background:#fff;color:#000;z-index:99;display:none;flex-direction:column;align-items:center;justify-content:center;padding:26px;text-align:center}
+#big.on{display:flex}
+#big .bt{font-size:42px;font-weight:800;line-height:1.25}
+#big .bs{margin-top:18px;font-size:16px;color:#666}
+#big .bc{position:absolute;top:calc(env(safe-area-inset-top) + 14px);right:18px;font-size:15px;color:#666;font-weight:700}
+</style>
+</head>
+<body>
+<header>
+  <div class="lg">
+    <button class="lb on" data-l="it">🇮🇹 이탈리아어</button>
+    <button class="lb" data-l="es">🇪🇸 스페인어</button>
+  </div>
+  <div class="tb">
+    <button class="t on" data-p="talk">🎙 대화</button>
+    <button class="t" data-p="book">📖 문구집</button>
+  </div>
+</header>
+<main>
+  <div class="pg on" id="p-talk">
+    <div class="hint" id="hint">
+      <b>파란 버튼</b>을 누르고 한국어로 말하세요.<br>
+      상대가 답할 땐 <b>회색 버튼</b>을 누르고 폰을 넘겨주세요.<br><br>
+      번역 글자를 <b>탭하면 크게</b> 떠서 보여줄 수 있어요.
+    </div>
+    <div id="log"></div>
+  </div>
+  <div class="pg" id="p-book">
+    <input class="srch" id="srch" placeholder="🔍 한국어로 검색 (예: 물, 화장실)">
+    <div id="bw"></div>
+  </div>
+</main>
+<footer id="ft">
+  <div class="mics">
+    <button class="mic" id="m1">🇰🇷 내가 말하기</button>
+    <button class="mic o" id="m2">🇮🇹 상대가 말하기</button>
+  </div>
+  <div class="tr">
+    <input id="tx" placeholder="타이핑으로 번역…">
+    <button id="sd">번역</button>
+  </div>
+  <div class="st" id="st"></div>
+</footer>
+<div id="big"><button class="bc" id="bx">닫기 ✕</button><div class="bt" id="bt"></div><div class="bs" id="bs"></div></div>
+<script>
+const L={it:{n:'이탈리아어',f:'🇮🇹',c:'it-IT',s:'it'},es:{n:'스페인어',f:'🇪🇸',c:'es-ES',s:'es'}};
+let cur=localStorage.getItem('lang')||'it';
+const $=i=>document.getElementById(i);
+
+/* ---------- 음성 출력 (오프라인 작동) ---------- */
+let vs=[],ul=false;
+const lv=()=>{vs=speechSynthesis?speechSynthesis.getVoices():[]};lv();
+if(window.speechSynthesis)speechSynthesis.onvoiceschanged=lv;
+function unlock(){if(ul||!window.speechSynthesis)return;try{const u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u);ul=1;lv()}catch(e){}}
+addEventListener('touchend',unlock);addEventListener('click',unlock);
+function say(t,c,r){if(!window.speechSynthesis||!t)return;unlock();speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(t);u.lang=c;u.rate=r||1;
+  const v=vs.find(x=>x.lang.replace('_','-')===c)||vs.find(x=>x.lang.replace('_','-').startsWith(c.split('-')[0]));
+  if(v)u.voice=v;setTimeout(()=>speechSynthesis.speak(u),60)}
+
+/* ---------- 번역 (키 없음) ---------- */
+async function tr(t,f,to){
+  try{const r=await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${f}&tl=${to}&dt=t&q=${encodeURIComponent(t)}`);
+    if(r.ok){const d=await r.json();const s=d[0].map(x=>x[0]).join('');if(s)return s}}catch(e){}
+  try{const r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(t)}&langpair=${f}|${to}`);
+    if(r.ok){const d=await r.json();const s=d.responseData&&d.responseData.translatedText;
+      if(s&&!/MYMEMORY WARNING|INVALID|QUERY LENGTH/i.test(s))return s}}catch(e){}
+  throw new Error('번역 서버에 연결 못했어요. 인터넷을 확인하거나 📖문구집을 쓰세요.');
+}
+
+/* ---------- 대화 ---------- */
+const log=$('log');
+async function run(text,dir){
+  if(!text||!text.trim())return;text=text.trim();
+  $('hint').style.display='none';
+  const b=document.createElement('div');
+  b.className='bub wait'+(dir=='me'?' me':'');
+  b.innerHTML='<div class="src"></div><div class="out">번역 중…</div>';
+  b.querySelector('.src').textContent=text;
+  log.appendChild(b);log.parentElement.scrollTop=1e6;
+  const f=dir=='me'?'ko':L[cur].s, t2=dir=='me'?L[cur].s:'ko';
+  const code=dir=='me'?L[cur].c:'ko-KR';
+  try{
+    const o=await tr(text,f,t2);
+    b.className='bub'+(dir=='me'?' me':'');
+    b.innerHTML='<div class="src"></div><div class="out"></div><div class="acts"><button class="chip a1">🔊 다시</button><button class="chip a2">🐢 느리게</button><button class="chip a3">🔍 크게</button></div>';
+    b.querySelector('.src').textContent=text;
+    b.querySelector('.out').textContent=o;
+    b.querySelector('.a1').onclick=()=>say(o,code,1);
+    b.querySelector('.a2').onclick=()=>say(o,code,.55);
+    b.querySelector('.a3').onclick=()=>big(o,text);
+    b.querySelector('.out').onclick=()=>big(o,text);
+    say(o,code,1);log.parentElement.scrollTop=1e6;
+  }catch(e){b.className='bub err';b.innerHTML='<div class="out"></div>';b.querySelector('.out').textContent='⚠️ '+e.message}
+}
+
+/* ---------- 음성 인식 ---------- */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let rc=null,ing=false;
+function labels(){$('m1').textContent='🇰🇷 내가 말하기';$('m2').textContent=L[cur].f+' 상대가 말하기'}
+function listen(dir,btn){
+  if(!SR){$('st').textContent='이 브라우저는 음성인식 미지원 — 아래 타이핑을 쓰세요';return}
+  if(ing){try{rc.stop()}catch(e){}return}
+  unlock();if(window.speechSynthesis)speechSynthesis.cancel();
+  rc=new SR();rc.lang=dir=='me'?'ko-KR':L[cur].c;rc.interimResults=true;
+  let fin='';
+  rc.onstart=()=>{ing=1;btn.classList.add('rec');btn.textContent='⏹ 다 말했어요';
+    $('st').textContent=dir=='me'?'듣고 있어요…':'Parla / Habla — 말씀하세요'};
+  rc.onresult=e=>{let im='';for(let i=e.resultIndex;i<e.results.length;i++){
+    const t=e.results[i][0].transcript;e.results[i].isFinal?fin+=t:im+=t}$('st').textContent=fin+im||'…'};
+  rc.onerror=e=>{$('st').textContent=e.error=='not-allowed'?'마이크 권한을 허용해 주세요':
+    e.error=='no-speech'?'소리가 안 들렸어요. 다시 눌러주세요':
+    e.error=='network'?'음성인식은 인터넷이 필요해요 (문구집은 오프라인 가능)':'오류: '+e.error};
+  rc.onend=()=>{ing=0;btn.classList.remove('rec');labels();if(fin.trim()){$('st').textContent='';run(fin,dir)}};
+  try{rc.start()}catch(e){$('st').textContent='다시 눌러주세요'}
+}
+$('m1').onclick=e=>listen('me',e.currentTarget);
+$('m2').onclick=e=>listen('you',e.currentTarget);
+$('sd').onclick=()=>{const v=$('tx').value;$('tx').value='';$('tx').blur();run(v,'me')};
+$('tx').onkeydown=e=>{if(e.key=='Enter')$('sd').click()};
+
+/* ---------- 문구집 ---------- */
+const B=[
+['💬 인사·기본',[['안녕하세요 (낮)','Buongiorno','Buenos días'],['안녕하세요 (저녁)','Buonasera','Buenas tardes'],['감사합니다','Grazie mille','Muchas gracias'],['실례합니다','Mi scusi','Perdone'],['부탁합니다','Per favore','Por favor'],['영어 하세요?','Parla inglese?','¿Habla inglés?'],['한국에서 왔어요','Vengo dalla Corea','Soy de Corea']]],
+['🍝 식당',[['두 명이요','Un tavolo per due','Una mesa para dos'],['메뉴판 주세요','Il menù, per favore','La carta, por favor'],['추천해 주세요','Cosa mi consiglia?','¿Qué me recomienda?'],['이거 주세요','Prendo questo','Quiero esto, por favor'],['생수 주세요','Acqua naturale, per favore','Agua sin gas, por favor'],['계산서 주세요','Il conto, per favore','La cuenta, por favor'],['카드 되나요?','Posso pagare con la carta?','¿Puedo pagar con tarjeta?'],['포장해 주세요','Da portare via','Para llevar'],['화장실 어디예요?',"Dov'è il bagno?",'¿Dónde está el baño?']]],
+['⚠️ 알레르기',[['견과류 알레르기가 있어요','Sono allergico alla frutta secca','Soy alérgico a los frutos secos'],['갑각류 알레르기가 있어요','Sono allergico ai crostacei','Soy alérgico al marisco'],['우유가 들어있나요?','Contiene latte?','¿Contiene leche?'],['채식주의자예요','Sono vegetariano','Soy vegetariano'],['매운 건 못 먹어요','Non posso mangiare piccante','No puedo comer picante']]],
+['🚆 길·교통',[['여기 어떻게 가요?','Come arrivo qui?','¿Cómo llego aquí?'],['역이 어디예요?',"Dov'è la stazione?",'¿Dónde está la estación?'],['표 한 장 주세요','Un biglietto, per favore','Un billete, por favor'],['몇 시에 출발해요?','A che ora parte?','¿A qué hora sale?'],['걸어서 얼마나 걸려요?','Quanto ci vuole a piedi?','¿Cuánto se tarda andando?'],['여기서 세워 주세요','Si fermi qui','Pare aquí, por favor']]],
+['🛍 쇼핑',[['얼마예요?','Quanto costa?','¿Cuánto cuesta?'],['너무 비싸요','È troppo caro','Es demasiado caro'],['깎아 주실 수 있나요?','Può farmi uno sconto?','¿Me puede hacer un descuento?'],['입어봐도 되나요?','Posso provarlo?','¿Me lo puedo probar?'],['그냥 구경중이에요','Sto solo guardando','Solo estoy mirando'],['영수증 주세요','La ricevuta, per favore','El recibo, por favor']]],
+['🏨 숙소',[['체크인할게요','Vorrei fare il check-in','Quiero hacer el check-in'],['예약했어요','Ho una prenotazione','Tengo una reserva'],['와이파이 비번이 뭐예요?','Password del wi-fi?','¿Contraseña del wifi?'],['짐 맡길 수 있나요?','Posso lasciare i bagagli?','¿Puedo dejar las maletas?'],['수건 더 주세요','Altri asciugamani','Más toallas, por favor']]],
+['🚑 응급',[['도와주세요!','Aiuto!','¡Ayuda!'],['경찰을 불러 주세요','Chiami la polizia','Llame a la policía'],['지갑을 도둑맞았어요','Mi hanno rubato il portafoglio','Me han robado la cartera'],['여권을 잃어버렸어요','Ho perso il passaporto','He perdido el pasaporte'],['몸이 안 좋아요','Non mi sento bene','No me siento bien'],['약국이 어디예요?',"Dov'è la farmacia?",'¿Dónde está la farmacia?']]],
+['🗣 막힐 때',[['잘 못 알아들었어요','Non ho capito','No he entendido'],['천천히 말해 주세요','Più lentamente, per favore','Más despacio, por favor'],['한 번만 더요','Può ripetere?','¿Puede repetirlo?'],['여기에 적어 주세요','Può scriverlo qui?','¿Puede escribirlo aquí?'],['잠시만요','Un momento','Un momento'],['사진 찍어 주실 수 있나요?','Può farmi una foto?','¿Me puede hacer una foto?']]]];
+function book(q){
+  const w=$('bw');w.innerHTML='';q=(q||'').trim();
+  B.forEach(([c,its])=>{
+    const list=q?its.filter(i=>i[0].includes(q)):its;
+    if(!list.length)return;
+    const cb=document.createElement('button');cb.className='cat';
+    cb.innerHTML='<span>'+c+'</span><span class="arw">'+list.length+'개 ▾</span>';w.appendChild(cb);
+    const pl=document.createElement('div');pl.className='pl'+(q?' on':'');
+    list.forEach(i=>{const p=document.createElement('button');p.className='pi';
+      const f=cur=='it'?i[1]:i[2];
+      p.innerHTML='<div class="ko"></div><div class="fr"></div>';
+      p.querySelector('.ko').textContent=i[0];p.querySelector('.fr').textContent=f;
+      p.onclick=()=>{say(f,L[cur].c,1);big(f,i[0])};pl.appendChild(p)});
+    w.appendChild(pl);cb.onclick=()=>pl.classList.toggle('on')});
+  if(!w.children.length)w.innerHTML='<div class="hint">검색 결과가 없어요</div>';
+}
+$('srch').oninput=e=>book(e.target.value);
+
+/* ---------- 크게 보여주기 ---------- */
+function big(m,s){$('bt').textContent=m;$('bs').textContent=s||'';$('big').classList.add('on')}
+$('bx').onclick=()=>$('big').classList.remove('on');
+
+/* ---------- 탭 · 언어 ---------- */
+document.querySelectorAll('.t').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  $('p-'+t.dataset.p).classList.add('on');
+  document.querySelectorAll('.t').forEach(x=>x.classList.toggle('on',x==t));
+  $('ft').style.display=t.dataset.p=='talk'?'block':'none';
+  if(t.dataset.p=='book')book($('srch').value)});
+document.querySelectorAll('.lb').forEach(b=>b.onclick=()=>{
+  cur=b.dataset.l;localStorage.setItem('lang',cur);
+  document.querySelectorAll('.lb').forEach(x=>x.classList.toggle('on',x.dataset.l==cur));
+  labels();book($('srch').value)});
+document.querySelectorAll('.lb').forEach(x=>x.classList.toggle('on',x.dataset.l==cur));
+labels();book('');
+setTimeout(lv,600);
+</script>
+</body>
+</html>
