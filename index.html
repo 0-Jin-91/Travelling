@@ -47,7 +47,7 @@ main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px}
 .hint{color:var(--sub);font-size:14px;line-height:1.8;text-align:center;padding:22px 14px}
 .hint b{color:var(--txt)}
 .legend{margin-top:16px;font-size:12.5px;line-height:1.9;color:var(--sub);text-align:left;display:inline-block;background:var(--pnl2);padding:12px 14px;border-radius:12px;border:1px solid var(--line)}
-.okbar{padding:10px 12px;margin-bottom:12px;border-radius:12px;background:#14301f;border:1px solid #1e4a2f;font-size:12.5px;font-weight:700;color:#7fdca0;line-height:1.5}
+.okbar{padding:10px 12px;margin-bottom:12px;border-radius:12px;background:#14301f;border:1px solid #1e4a2f;font-size:12.5px;font-weight:700;color:#7fdca0;line-height:1.6}
 body.es .okbar{background:#2b2410;border-color:#4a3d16;color:#f0cd7a}
 .warn{display:none;padding:12px 13px;margin-bottom:12px;border-radius:13px;background:#3a1416;border:1px solid #5a2024;font-size:13px;font-weight:600;color:#ffb3b3;line-height:1.55}
 .warn.on{display:block}
@@ -68,22 +68,25 @@ body.es .tag{background:#2b2410;color:#eec776}
 .wait .out{color:var(--sub);font-size:18px;font-weight:500}
 .err{background:#3a1416;border-color:#5a2024}
 .err .out{font-size:14.5px;color:#ffb3b3;font-weight:600;line-height:1.55;white-space:pre-line}
-.cat{width:100%;text-align:left;padding:15px 14px;margin-bottom:8px;border-radius:14px;background:var(--pnl);font-size:16px;font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid var(--line)}
+.cat{width:100%;text-align:left;padding:15px 14px;margin-bottom:8px;border-radius:14px;background:var(--pnl);font-size:16px;font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:7px;border:1px solid var(--line)}
 .arw{color:var(--sub);font-size:12.5px;font-weight:700;flex:0 0 auto}
 .mine-n{color:var(--acc2);font-size:11.5px;font-weight:800;flex:0 0 auto}
+.adj-n{color:var(--acc);font-size:11.5px;font-weight:800;flex:0 0 auto}
 .catx{width:28px;height:28px;border-radius:9px;background:#33222a;color:#ff9d9d;font-size:12px;font-weight:800;flex:0 0 auto}
 .pl{display:none}.pl.on{display:block}
 .pi{width:100%;text-align:left;padding:13px 14px;margin-bottom:7px;border-radius:12px;background:var(--pnl2);border:1px solid var(--line);border-left:3px solid var(--acc);display:block}
 .pi .ko{font-size:13px;color:var(--sub);margin-bottom:5px}
 .pi .fr{font-size:19px;font-weight:700;line-height:1.3}
-.pi.adj{border-left-color:var(--acc2)}
+.pi.adj{border-left-color:var(--acc);background:#ffffff08}
 .pi.usr{border-left-color:var(--acc2);background:#ffffff0a}
 .ubadge{display:inline-block;padding:3px 7px;border-radius:6px;background:var(--acc2);color:#fff;font-size:9.5px;font-weight:800;margin-right:6px;vertical-align:2px}
+.abadge{display:inline-block;padding:3px 7px;border-radius:6px;background:var(--acc);color:#0d1410;font-size:9.5px;font-weight:800;margin-right:6px;vertical-align:2px}
+body.es .abadge{color:#2a1508}
 .addin{width:100%;padding:12px;margin-bottom:9px;border-radius:11px;background:#ffffff0d;border:1px dashed var(--line);font-size:13px;font-weight:700;color:var(--sub)}
-.stp{display:flex;gap:7px;align-items:center;margin-top:10px}
-.sb{width:42px;height:42px;border-radius:11px;background:#ffffff14;font-size:21px;font-weight:800;flex:0 0 auto;border:1px solid var(--line)}
-.sv{font-size:15px;font-weight:800;min-width:52px;text-align:center;color:var(--acc2)}
-.spk{flex:1;height:42px;border-radius:11px;background:var(--acc);color:#0d1410;font-size:14px;font-weight:800}
+.stp{display:flex;gap:7px;align-items:center;margin-top:11px}
+.sb{width:44px;height:44px;border-radius:11px;background:#ffffff17;font-size:22px;font-weight:800;flex:0 0 auto;border:1px solid var(--line)}
+.sv{font-size:15px;font-weight:800;min-width:60px;text-align:center;color:var(--acc)}
+.spk{flex:1;height:44px;border-radius:11px;background:var(--acc);color:#0d1410;font-size:14px;font-weight:800}
 body.es .spk{color:#2a1508}
 .srch,.ci{width:100%;padding:13px;border-radius:12px;background:var(--pnl2);color:var(--txt);font-size:16px;border:1px solid var(--line);margin-bottom:9px}
 .crow{display:flex;gap:7px;margin-bottom:9px}
@@ -172,9 +175,10 @@ body.es .shnew{color:#2a1508}
       상대가 답할 땐 <b>오른쪽 버튼</b>을 누르고 폰을 넘겨주세요.<br>
       번역 글자를 <b>탭하면 크게</b> 떠서 보여줄 수 있어요.
       <div class="legend">
-        🌐 <b>대화</b> — 인터넷 필요 (1회 약 0.15MB)<br>
+        🌐 <b>대화</b> — 인터넷 필요 (1회 약 0.05MB)<br>
         ✈️ <b>문구집</b> — 인터넷 없이 완전 작동<br>
-        ⭐ <b>저장</b> — 분류를 골라 <b>문구집에 바로 추가</b><br>
+        🔢 <b>조절 문구</b> — 인원·개수·시간을 ＋−로 변경<br>
+        ⭐ <b>저장</b> — 분류를 골라 문구집에 추가<br>
         💾 <b>저장된 번역</b> — 오프라인에서도 재사용
       </div>
     </div>
@@ -186,8 +190,8 @@ body.es .shnew{color:#2a1508}
   </div>
 
   <div class="pg" id="p-book">
-    <div class="okbar">✈️ <b>인터넷 없이도</b> 완전히 작동 (비행기 모드·지하철 OK)<br>✏️ 표시는 내가 추가한 문장이에요</div>
-    <input class="srch" id="srch" placeholder="🔍 한국어로 검색 (기본 + 내 문장)">
+    <div class="okbar">✈️ <b>인터넷 없이도</b> 완전히 작동 (비행기 모드·지하철 OK)<br>🔢 표시는 <b>＋−로 숫자 조절</b> · ✏️ 표시는 내가 추가한 문장</div>
+    <input class="srch" id="srch" placeholder="🔍 한국어로 검색 (예: 물, 인원, 표)">
     <button class="addin" id="bknew" style="margin-bottom:12px">＋ 새 분류 만들기</button>
     <div id="bw"></div>
   </div>
@@ -290,28 +294,77 @@ async function tr(t,f,to){
   throw new Error('번역 서버에 연결 못했어요.\n['+er.join(' / ')+']\n\n📖 문구집은 그대로 쓸 수 있어요.');
 }
 
-/* ===== 문구집 기본 데이터 ===== */
+/* ===== 기본 문구집 ===== */
 const BOOK={
 '💬 인사·기본':[['안녕하세요 (낮)','Buongiorno','Buenos días'],['안녕하세요 (저녁)','Buonasera','Buenas tardes'],['감사합니다','Grazie mille','Muchas gracias'],['실례합니다','Mi scusi','Perdone'],['부탁합니다','Per favore','Por favor'],['영어 하세요?','Parla inglese?','¿Habla inglés?'],['한국에서 왔어요','Vengo dalla Corea','Soy de Corea']],
-'🍝 식당':[['메뉴판 주세요','Il menù, per favore','La carta, por favor'],['추천해 주세요','Cosa mi consiglia?','¿Qué me recomienda?'],['이거 주세요','Prendo questo','Quiero esto, por favor'],['생수 주세요','Acqua naturale, per favore','Agua sin gas, por favor'],['계산서 주세요','Il conto, per favore','La cuenta, por favor'],['카드 되나요?','Posso pagare con la carta?','¿Puedo pagar con tarjeta?'],['포장해 주세요','Da portare via','Para llevar'],['화장실 어디예요?',"Dov'è il bagno?",'¿Dónde está el baño?']],
+'🍝 식당':[['메뉴판 주세요','Il menù, per favore','La carta, por favor'],['추천해 주세요','Cosa mi consiglia?','¿Qué me recomienda?'],['이거 주세요','Prendo questo','Quiero esto, por favor'],['계산서 주세요','Il conto, per favore','La cuenta, por favor'],['카드 되나요?','Posso pagare con la carta?','¿Puedo pagar con tarjeta?'],['포장해 주세요','Da portare via','Para llevar'],['화장실 어디예요?',"Dov'è il bagno?",'¿Dónde está el baño?']],
 '⚠️ 알레르기':[['견과류 알레르기가 있어요','Sono allergico alla frutta secca','Soy alérgico a los frutos secos'],['갑각류 알레르기가 있어요','Sono allergico ai crostacei','Soy alérgico al marisco'],['우유가 들어있나요?','Contiene latte?','¿Contiene leche?'],['채식주의자예요','Sono vegetariano','Soy vegetariano'],['매운 건 못 먹어요','Non posso mangiare piccante','No puedo comer picante']],
 '🚆 길·교통':[['여기 어떻게 가요?','Come arrivo qui?','¿Cómo llego aquí?'],['역이 어디예요?',"Dov'è la stazione?",'¿Dónde está la estación?'],['몇 시에 출발해요?','A che ora parte?','¿A qué hora sale?'],['걸어서 얼마나 걸려요?','Quanto ci vuole a piedi?','¿Cuánto se tarda andando?'],['여기서 세워 주세요','Si fermi qui','Pare aquí, por favor']],
 '🛍 쇼핑':[['얼마예요?','Quanto costa?','¿Cuánto cuesta?'],['너무 비싸요','È troppo caro','Es demasiado caro'],['깎아 주실 수 있나요?','Può farmi uno sconto?','¿Me puede hacer un descuento?'],['입어봐도 되나요?','Posso provarlo?','¿Me lo puedo probar?'],['그냥 구경중이에요','Sto solo guardando','Solo estoy mirando'],['영수증 주세요','La ricevuta, per favore','El recibo, por favor']],
-'🏨 숙소':[['체크인할게요','Vorrei fare il check-in','Quiero hacer el check-in'],['예약했어요','Ho una prenotazione','Tengo una reserva'],['와이파이 비번이 뭐예요?','Password del wi-fi?','¿Contraseña del wifi?'],['짐 맡길 수 있나요?','Posso lasciare i bagagli?','¿Puedo dejar las maletas?'],['수건 더 주세요','Altri asciugamani','Más toallas, por favor']],
+'🏨 숙소':[['체크인할게요','Vorrei fare il check-in','Quiero hacer el check-in'],['예약했어요','Ho una prenotazione','Tengo una reserva'],['와이파이 비번이 뭐예요?','Password del wi-fi?','¿Contraseña del wifi?'],['짐 맡길 수 있나요?','Posso lasciare i bagagli?','¿Puedo dejar las maletas?']],
 '🚑 응급':[['도와주세요!','Aiuto!','¡Ayuda!'],['경찰을 불러 주세요','Chiami la polizia','Llame a la policía'],['지갑을 도둑맞았어요','Mi hanno rubato il portafoglio','Me han robado la cartera'],['여권을 잃어버렸어요','Ho perso il passaporto','He perdido el pasaporte'],['몸이 안 좋아요','Non mi sento bene','No me siento bien'],['약국이 어디예요?',"Dov'è la farmacia?",'¿Dónde está la farmacia?']],
 '🗣 막힐 때':[['잘 못 알아들었어요','Non ho capito','No he entendido'],['천천히 말해 주세요','Più lentamente, per favore','Más despacio, por favor'],['한 번만 더요','Può ripetere?','¿Puede repetirlo?'],['여기에 적어 주세요','Può scriverlo qui?','¿Puede escribirlo aquí?'],['잠시만요','Un momento','Un momento'],['사진 찍어 주실 수 있나요?','Può farmi una foto?','¿Me puede hacer una foto?']]
 };
+
+/* ===== 숫자 조절 문구 (분류별로 배치) ===== */
+const NIT=['','uno','due','tre','quattro','cinque','sei','sette','otto','nove','dieci','undici','dodici'];
+const NES=['','uno','dos','tres','cuatro','cinco','seis','siete','ocho','nueve','diez','once','doce'];
+const ADJ=[
+/* 🍝 식당 */
+{cat:'🍝 식당',u:'명',mn:1,mx:12,df:2,k:n=>n+'명 자리 부탁해요',
+ it:n=>n==1?'Un tavolo per una persona, per favore':'Un tavolo per '+NIT[n]+', per favore',
+ es:n=>n==1?'Una mesa para una persona, por favor':'Una mesa para '+NES[n]+', por favor'},
+{cat:'🍝 식당',u:'명',mn:1,mx:12,df:2,k:n=>'저희 '+n+'명이에요',
+ it:n=>n==1?'Sono da solo':'Siamo in '+NIT[n],
+ es:n=>n==1?'Vengo solo':'Somos '+NES[n]},
+{cat:'🍝 식당',u:'인분',mn:1,mx:12,df:2,k:n=>n+'인분 주세요',
+ it:n=>n==1?'Una porzione, per favore':NIT[n]+' porzioni, per favore',
+ es:n=>n==1?'Una ración, por favor':NES[n]+' raciones, por favor'},
+{cat:'🍝 식당',u:'병',mn:1,mx:6,df:1,k:n=>'생수 '+n+'병 주세요',
+ it:n=>n==1?"Una bottiglia d'acqua naturale, per favore":NIT[n]+" bottiglie d'acqua naturale, per favore",
+ es:n=>n==1?'Una botella de agua sin gas, por favor':NES[n]+' botellas de agua sin gas, por favor'},
+{cat:'🍝 식당',u:'잔',mn:1,mx:8,df:2,k:n=>'커피 '+n+'잔 주세요',
+ it:n=>n==1?'Un caffè, per favore':NIT[n]+' caffè, per favore',
+ es:n=>n==1?'Un café, por favor':NES[n]+' cafés, por favor'},
+{cat:'🍝 식당',u:'시',mn:11,mx:23,df:19,k:n=>n+'시에 예약했어요',
+ it:n=>'Ho una prenotazione alle '+n,
+ es:n=>'Tengo una reserva a las '+n},
+/* 🚆 길·교통 */
+{cat:'🚆 길·교통',u:'장',mn:1,mx:12,df:2,k:n=>'표 '+n+'장 주세요',
+ it:n=>n==1?'Un biglietto, per favore':NIT[n]+' biglietti, per favore',
+ es:n=>n==1?'Un billete, por favor':NES[n]+' billetes, por favor'},
+{cat:'🚆 길·교통',u:'명',mn:1,mx:12,df:2,k:n=>'어른 '+n+'명 입장권이요',
+ it:n=>n==1?'Un ingresso per adulto, per favore':NIT[n]+' ingressi per adulti, per favore',
+ es:n=>n==1?'Una entrada para adulto, por favor':NES[n]+' entradas para adultos, por favor'},
+{cat:'🚆 길·교통',u:'시',mn:5,mx:23,df:9,k:n=>n+'시 기차 있나요?',
+ it:n=>"C'è un treno alle "+n+'?',
+ es:n=>'¿Hay un tren a las '+n+'?'},
+/* 🛍 쇼핑 */
+{cat:'🛍 쇼핑',u:'개',mn:1,mx:12,df:2,k:n=>'이거 '+n+'개 주세요',
+ it:n=>'Ne vorrei '+NIT[n]+', per favore',
+ es:n=>'Quiero '+NES[n]+', por favor'},
+{cat:'🛍 쇼핑',u:'유로',mn:5,mx:200,df:20,st:5,k:n=>n+'유로에 해주실 수 있나요?',
+ it:n=>'Me lo fa a '+n+' euro?',
+ es:n=>'¿Me lo deja en '+n+' euros?'},
+/* 🏨 숙소 */
+{cat:'🏨 숙소',u:'박',mn:1,mx:14,df:2,k:n=>n+'박 묵을 거예요',
+ it:n=>n==1?'Resto una notte':'Resto '+(n<=12?NIT[n]:n)+' notti',
+ es:n=>n==1?'Me quedo una noche':'Me quedo '+(n<=12?NES[n]:n)+' noches'},
+{cat:'🏨 숙소',u:'개',mn:1,mx:8,df:2,k:n=>'수건 '+n+'개 주세요',
+ it:n=>n==1?'Un asciugamano, per favore':NIT[n]+' asciugamani, per favore',
+ es:n=>n==1?'Una toalla, por favor':NES[n]+' toallas, por favor'}
+];
+
 const DEF=['⭐ 즐겨찾기','💬 인사·기본','🍝 식당','⚠️ 알레르기','🚆 길·교통','🛍 쇼핑','🏨 숙소','🚑 응급','🗣 막힐 때','📌 기타'];
 const OLDMAP={'🚆 교통':'🚆 길·교통'};
-
 function getCats(){
   let a=null;try{a=JSON.parse(localStorage.getItem('cats'))}catch(e){}
   if(!a||!a.length){a=DEF.slice();localStorage.setItem('cats',JSON.stringify(a));return a}
   a=a.map(c=>OLDMAP[c]||c);
   DEF.forEach(d=>{if(!a.includes(d))a.splice(Math.max(a.length-1,0),0,d)});
   a=a.filter((c,i)=>a.indexOf(c)==i);
-  const others=a.filter(c=>c!='📌 기타');others.push('📌 기타');
-  localStorage.setItem('cats',JSON.stringify(others));return others}
+  const o=a.filter(c=>c!='📌 기타');o.push('📌 기타');
+  localStorage.setItem('cats',JSON.stringify(o));return o}
 function setCats(a){localStorage.setItem('cats',JSON.stringify(a))}
 function newCat(){
   const n=prompt('새 분류 이름을 입력하세요\n(이모지도 쓸 수 있어요 — 예: 🍷 와인바)');
@@ -333,11 +386,11 @@ function pickCat(sub,cb){
   const w=$('shl');w.innerHTML='';const all=getMine();
   getCats().forEach(c=>{
     const un=all.filter(x=>x.lang==cur&&x.cat==c).length;
-    const bn=(BOOK[c]||[]).length;
+    const bn=(BOOK[c]||[]).length+ADJ.filter(a=>a.cat==c).length;
     const b=document.createElement('button');b.className='shb';
     b.innerHTML='<span style="flex:1"></span><span class="n"></span>';
     b.querySelector('span').textContent=c;
-    b.querySelector('.n').textContent=(bn?'기본 '+bn:'')+(bn&&un?' · ':'')+(un?'✏️ '+un:'')||'비어 있음';
+    b.querySelector('.n').textContent=((bn?'기본 '+bn:'')+(bn&&un?' · ':'')+(un?'✏️ '+un:''))||'비어 있음';
     b.onclick=()=>{$('sheet').classList.remove('on');if(pickCb)pickCb(c);pickCb=null};
     w.appendChild(b)});
   $('sheet').classList.add('on')}
@@ -442,48 +495,34 @@ $('b2').onclick=()=>listen('you');
 $('sd').onclick=()=>{const v=$('tx').value;$('tx').value='';$('tx').blur();run(v,'me')};
 $('tx').onkeydown=e=>{if(e.key=='Enter')$('sd').click()};
 
-/* ===== 숫자 조절 ===== */
-const NIT=['','uno','due','tre','quattro','cinque','sei','sette','otto','nove','dieci','undici','dodici'];
-const NES=['','uno','dos','tres','cuatro','cinco','seis','siete','ocho','nueve','diez','once','doce'];
-const ADJ=[
-{k:n=>n+'명 자리 부탁해요',mn:1,mx:12,df:2,
- it:n=>n==1?'Un tavolo per una persona, per favore':'Un tavolo per '+NIT[n]+', per favore',
- es:n=>n==1?'Una mesa para una persona, por favor':'Una mesa para '+NES[n]+', por favor'},
-{k:n=>'저희 '+n+'명이에요',mn:1,mx:12,df:2,
- it:n=>n==1?'Sono da solo':'Siamo in '+NIT[n],
- es:n=>n==1?'Vengo solo':'Somos '+NES[n]},
-{k:n=>'이거 '+n+'개 주세요',mn:1,mx:12,df:2,
- it:n=>'Ne vorrei '+NIT[n]+', per favore',
- es:n=>'Quiero '+NES[n]+', por favor'},
-{k:n=>n+'인분 주세요',mn:1,mx:12,df:2,
- it:n=>n==1?'Una porzione, per favore':NIT[n]+' porzioni, per favore',
- es:n=>n==1?'Una ración, por favor':NES[n]+' raciones, por favor'},
-{k:n=>'표 '+n+'장 주세요',mn:1,mx:12,df:2,
- it:n=>n==1?'Un biglietto, per favore':NIT[n]+' biglietti, per favore',
- es:n=>n==1?'Un billete, por favor':NES[n]+' billetes, por favor'},
-{k:n=>'어른 '+n+'명 입장권이요',mn:1,mx:12,df:2,
- it:n=>n==1?'Un ingresso per adulto, per favore':NIT[n]+' ingressi per adulti, per favore',
- es:n=>n==1?'Una entrada para adulto, por favor':NES[n]+' entradas para adultos, por favor'},
-{k:n=>'커피 '+n+'잔 주세요',mn:1,mx:12,df:2,
- it:n=>n==1?'Un caffè, per favore':NIT[n]+' caffè, per favore',
- es:n=>n==1?'Un café, por favor':NES[n]+' cafés, por favor'},
-{k:n=>n+'박 묵을 거예요',mn:1,mx:12,df:2,
- it:n=>n==1?'Resto una notte':'Resto '+NIT[n]+' notti',
- es:n=>n==1?'Me quedo una noche':'Me quedo '+NES[n]+' noches'},
-{k:n=>n+'시에 예약했어요',mn:7,mx:23,df:19,
- it:n=>'Ho una prenotazione alle '+n,
- es:n=>'Tengo una reserva a las '+n}];
+/* ===== 행 만들기 ===== */
 function adjRow(a){
-  let n=a.df;
+  let n=a.df;const step=a.st||1;
   const p=document.createElement('div');p.className='pi adj';
-  p.innerHTML='<div class="ko"></div><div class="fr"></div><div class="stp"><button class="sb mi">−</button><span class="sv"></span><button class="sb pl2">＋</button><button class="spk">🔊 말하기</button></div>';
-  const ko=p.querySelector('.ko'),fr=p.querySelector('.fr'),sv=p.querySelector('.sv');
-  function draw(){const t=a[cur](n);ko.textContent=a.k(n);fr.textContent=t;sv.textContent=n+(a.mx>12?'시':'');return t}
-  p.querySelector('.mi').onclick=e=>{e.stopPropagation();if(n>a.mn)n--;draw()};
-  p.querySelector('.pl2').onclick=e=>{e.stopPropagation();if(n<a.mx)n++;draw()};
+  p.innerHTML='<div class="ko"><span class="abadge">🔢 조절</span><span class="kt"></span></div><div class="fr"></div>'+
+    '<div class="stp"><button class="sb mi">−</button><span class="sv"></span><button class="sb pp">＋</button><button class="spk">🔊 말하기</button></div>';
+  const ko=p.querySelector('.kt'),fr=p.querySelector('.fr'),sv=p.querySelector('.sv');
+  function draw(){const t=a[cur](n);ko.textContent=a.k(n);fr.textContent=t;sv.textContent=n+(a.u||'');return t}
+  p.querySelector('.mi').onclick=e=>{e.stopPropagation();n=Math.max(a.mn,n-step);draw()};
+  p.querySelector('.pp').onclick=e=>{e.stopPropagation();n=Math.min(a.mx,n+step);draw()};
   p.querySelector('.spk').onclick=e=>{e.stopPropagation();const t=draw();say(t,L[cur].c,1);big(t,a.k(n))};
-  fr.onclick=()=>{const t=draw();say(t,L[cur].c,1);big(t,a.k(n))};
+  fr.onclick=e=>{e.stopPropagation();const t=draw();say(t,L[cur].c,1);big(t,a.k(n))};
   draw();return p}
+function builtRow(i){
+  const p=document.createElement('button');p.className='pi';
+  const f=cur=='it'?i[1]:i[2];
+  p.innerHTML='<div class="ko"></div><div class="fr"></div>';
+  p.querySelector('.ko').textContent=i[0];p.querySelector('.fr').textContent=f;
+  p.onclick=()=>{say(f,L[cur].c,1);big(f,i[0])};return p}
+function userRow(x){
+  const row=document.createElement('div');row.className='mrow';
+  const p=document.createElement('button');p.className='pi usr';
+  p.innerHTML='<div class="ko"><span class="ubadge">✏️ 내 문장</span><span class="kt"></span></div><div class="fr"></div>';
+  p.querySelector('.kt').textContent=x.ko;p.querySelector('.fr').textContent=x.fr;
+  p.onclick=()=>{say(x.fr,L[cur].c,1);big(x.fr,x.ko)};
+  const d=document.createElement('button');d.className='del';d.textContent='✕';
+  d.onclick=e=>{e.stopPropagation();delMine(x)};
+  row.appendChild(p);row.appendChild(d);return row}
 
 /* ===== 내 문장 저장소 ===== */
 function getMine(){let a=[];try{a=JSON.parse(localStorage.getItem('mine'))||[]}catch(e){}
@@ -493,53 +532,36 @@ function getMine(){let a=[];try{a=JSON.parse(localStorage.getItem('mine'))||[]}c
 function setMine(a){localStorage.setItem('mine',JSON.stringify(a.slice(0,300)))}
 function addMine(ko,fr,cat){const a=getMine();a.unshift({ko:ko,fr:fr,lang:cur,cat:cat||'📌 기타'});setMine(a);
   book($('srch').value);mine()}
-function delMine(x,after){
+function delMine(x){
   if(!confirm('이 문장을 삭제할까요?\n\n'+x.ko+'\n'+x.fr))return;
   const a=getMine();const i=a.findIndex(y=>y.ko==x.ko&&y.fr==x.fr&&y.lang==x.lang&&y.cat==x.cat);
-  if(i>-1)a.splice(i,1);setMine(a);book($('srch').value);mine();if(after)after()}
-function userRow(x){
-  const row=document.createElement('div');row.className='mrow';
-  const p=document.createElement('button');p.className='pi usr';
-  p.innerHTML='<div class="ko"><span class="ubadge">✏️ 내 문장</span><span class="kt"></span></div><div class="fr"></div>';
-  p.querySelector('.kt').textContent=x.ko;
-  p.querySelector('.fr').textContent=x.fr;
-  p.onclick=()=>{say(x.fr,L[cur].c,1);big(x.fr,x.ko)};
-  const d=document.createElement('button');d.className='del';d.textContent='✕';
-  d.onclick=e=>{e.stopPropagation();delMine(x)};
-  row.appendChild(p);row.appendChild(d);return row}
-function builtRow(i){
-  const p=document.createElement('button');p.className='pi';
-  const f=cur=='it'?i[1]:i[2];
-  p.innerHTML='<div class="ko"></div><div class="fr"></div>';
-  p.querySelector('.ko').textContent=i[0];p.querySelector('.fr').textContent=f;
-  p.onclick=()=>{say(f,L[cur].c,1);big(f,i[0])};return p}
+  if(i>-1)a.splice(i,1);setMine(a);book($('srch').value);mine()}
 function goAdd(cat){tab('mine');fillSel(cat);localStorage.setItem('lastcat',cat);
   setTimeout(()=>{$('mk').focus();$('mk').scrollIntoView({block:'center'})},80)}
 
-/* ===== 문구집 (기본 + 내 문장 통합) ===== */
+/* ===== 문구집 ===== */
 function book(q){
   const w=$('bw');w.innerHTML='';q=(q||'').trim();
   const all=getMine().filter(x=>x.lang==cur);
-  if(!q){
-    const cb=document.createElement('button');cb.className='cat';
-    cb.innerHTML='<span style="flex:1">🔢 숫자로 조절 (인원·개수·시간)</span><span class="arw">'+ADJ.length+'개 ▾</span>';
-    w.appendChild(cb);
-    const pl=document.createElement('div');pl.className='pl';
-    ADJ.forEach(a=>pl.appendChild(adjRow(a)));
-    w.appendChild(pl);cb.onclick=()=>pl.classList.toggle('on')}
   getCats().forEach(c=>{
     const built=(BOOK[c]||[]).filter(i=>!q||i[0].includes(q));
+    const adjs=ADJ.filter(a=>a.cat==c&&(!q||a.k(a.df).includes(q)||(a.u||'').includes(q)));
     const users=all.filter(x=>x.cat==c&&(!q||x.ko.includes(q)||x.fr.toLowerCase().includes(q.toLowerCase())));
-    if(!built.length&&!users.length&&q)return;
-    if(!built.length&&!users.length&&!BOOK[c]&&!DEF.includes(c))return;
+    const tot=built.length+adjs.length+users.length;
+    if(!tot&&q)return;
+    if(!tot&&!DEF.includes(c))return;
     const isDef=DEF.includes(c);
     const cb=document.createElement('button');cb.className='cat';
-    cb.innerHTML='<span style="flex:1"></span>'+(users.length?'<span class="mine-n">✏️ '+users.length+'</span>':'')+
-      (isDef?'':'<button class="catx">✕</button>')+'<span class="arw">'+(built.length+users.length)+'개 ▾</span>';
+    cb.innerHTML='<span style="flex:1"></span>'+
+      (users.length?'<span class="mine-n">✏️'+users.length+'</span>':'')+
+      (adjs.length?'<span class="adj-n">🔢'+adjs.length+'</span>':'')+
+      (isDef?'':'<button class="catx">✕</button>')+
+      '<span class="arw">'+tot+'개 ▾</span>';
     cb.querySelector('span').textContent=c;
     w.appendChild(cb);
     const pl=document.createElement('div');pl.className='pl'+(q?' on':'');
     users.forEach(x=>pl.appendChild(userRow(x)));
+    adjs.forEach(a=>pl.appendChild(adjRow(a)));
     built.forEach(i=>pl.appendChild(builtRow(i)));
     const ab=document.createElement('button');ab.className='addin';
     ab.textContent='＋ 「'+c+'」에 내 문장 추가';
