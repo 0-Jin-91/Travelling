@@ -36,11 +36,11 @@ body.pt{
  --bigbg:#f4f8fc;--bigtx:#123a5c;--bigsub:#7c8fa3;
 }
 body.en{
- --bg:#101318;--pnl:#191d24;--pnl2:#14181e;--line:#2a3038;
- --acc:#4f7cff;--acc2:#c0392b;--onacc:#fff;--txt:#f0f2f5;--sub:#98a2b0;
- --me:#1c2740;--you:#1d2229;--dsp:-apple-system,BlinkMacSystemFont,sans-serif;
- --stripe:linear-gradient(90deg,#012169 0 33%,#f5f5f5 33% 66%,#c8102e 66% 100%);
- --bigbg:#f7f8fa;--bigtx:#1a2740;--bigsub:#7b8794;
+ --bg:#0d1117;--pnl:#161d28;--pnl2:#111721;--line:#26303e;
+ --acc:#2f6fed;--acc2:#b31942;--onacc:#fff;--txt:#f2f5f9;--sub:#93a1b3;
+ --me:#172740;--you:#1a212c;--dsp:'Helvetica Neue',-apple-system,sans-serif;
+ --stripe:linear-gradient(90deg,#0a3161 0 26%,#b31942 26% 41%,#f7f7f7 41% 56%,#b31942 56% 71%,#f7f7f7 71% 85%,#b31942 85% 100%);
+ --bigbg:#f7f9fc;--bigtx:#0a3161;--bigsub:#7b8794;
 }
 body.ja{
  --bg:#14100f;--pnl:#1e1817;--pnl2:#181312;--line:#332826;
@@ -171,7 +171,7 @@ footer{padding:10px 12px 12px;background:var(--pnl);border-top:1px solid var(--l
     <button class="lb on" data-l="it"><span class="fl">🇮🇹</span><span class="nm">이탈리아</span></button>
     <button class="lb" data-l="es"><span class="fl">🇪🇸</span><span class="nm">스페인</span></button>
     <button class="lb" data-l="pt"><span class="fl">🇵🇹</span><span class="nm">포르투갈</span></button>
-    <button class="lb" data-l="en"><span class="fl">🇬🇧</span><span class="nm">영어</span></button>
+    <button class="lb" data-l="en"><span class="fl">🇺🇸</span><span class="nm">미국</span></button>
     <button class="lb" data-l="ja"><span class="fl">🇯🇵</span><span class="nm">일본</span></button>
   </div>
   <div class="tb">
@@ -274,9 +274,9 @@ const L={
    btn:'Fale em português',lis:'ESTOU A OUVIR…',
    idle:'Fale, por favor — toque no botão vermelho quando terminar',
    done:'⏹ Já terminei',sub:'A sua voz será traduzida para coreano'},
- en:{i:4,n:'영어',f:'🇬🇧',c:'en-US',s:'en',
+ en:{i:4,n:'영어',f:'🇺🇸',c:'en-US',s:'en',
    btn:'Speak in English',lis:'LISTENING…',
-   idle:"Please speak — tap the red button when you're done",
+   idle:"Go ahead and speak — tap the red button when you're done",
    done:"⏹ I'm done",sub:'Your speech will be translated into Korean'},
  ja:{i:5,n:'일본어',f:'🇯🇵',c:'ja-JP',s:'ja',
    btn:'日本語で話してください',lis:'お話しください…',
@@ -326,62 +326,62 @@ async function tr(t,f,to){
   throw new Error('번역 서버에 연결 못했어요.\n['+er.join(' / ')+']\n\n📖 문구집은 그대로 쓸 수 있어요.');
 }
 
-/* ================= 문구집 (ko, it, es, pt, en, ja) ================= */
+/* ================= 문구집 (ko, it, es, pt, en-US, ja) ================= */
 const BOOK={
 '💬 인사·기본':[
 ['안녕하세요 (낮)','Buongiorno','Buenos días','Bom dia','Hello','こんにちは'],
 ['안녕하세요 (저녁)','Buonasera','Buenas tardes','Boa noite','Good evening','こんばんは'],
-['감사합니다','Grazie mille','Muchas gracias','Muito obrigado','Thank you very much','ありがとうございます'],
+['감사합니다','Grazie mille','Muchas gracias','Muito obrigado','Thank you so much','ありがとうございます'],
 ['실례합니다','Mi scusi','Perdone','Com licença','Excuse me','すみません'],
 ['부탁합니다','Per favore','Por favor','Por favor','Please','お願いします'],
 ['영어 하세요?','Parla inglese?','¿Habla inglés?','Fala inglês?','Do you speak English?','英語は話せますか？'],
 ['한국에서 왔어요','Vengo dalla Corea','Soy de Corea','Sou da Coreia',"I'm from Korea",'韓国から来ました']],
 '🍝 식당':[
-['메뉴판 주세요','Il menù, per favore','La carta, por favor','A ementa, por favor','The menu, please','メニューをお願いします'],
+['메뉴판 주세요','Il menù, per favore','La carta, por favor','A ementa, por favor','Could I see the menu?','メニューをお願いします'],
 ['추천해 주세요','Cosa mi consiglia?','¿Qué me recomienda?','O que recomenda?','What do you recommend?','おすすめは何ですか？'],
 ['이거 주세요','Prendo questo','Quiero esto, por favor','Queria este, por favor',"I'll have this, please",'これをください'],
-['계산서 주세요','Il conto, per favore','La cuenta, por favor','A conta, por favor','The bill, please','お会計をお願いします'],
-['카드 되나요?','Posso pagare con la carta?','¿Puedo pagar con tarjeta?','Posso pagar com cartão?','Can I pay by card?','カードで払えますか？'],
-['포장해 주세요','Da portare via','Para llevar','Para levar, por favor','To take away, please','持ち帰りでお願いします'],
+['계산서 주세요','Il conto, per favore','La cuenta, por favor','A conta, por favor','Check, please','お会計をお願いします'],
+['카드 되나요?','Posso pagare con la carta?','¿Puedo pagar con tarjeta?','Posso pagar com cartão?','Can I pay with a card?','カードで払えますか？'],
+['포장해 주세요','Da portare via','Para llevar','Para levar, por favor','To go, please','持ち帰りでお願いします'],
 ['화장실 어디예요?',"Dov'è il bagno?",'¿Dónde está el baño?','Onde é a casa de banho?','Where is the restroom?','トイレはどこですか？']],
 '⚠️ 알레르기':[
 ['견과류 알레르기가 있어요','Sono allergico alla frutta secca','Soy alérgico a los frutos secos','Sou alérgico a frutos secos',"I'm allergic to nuts",'ナッツアレルギーがあります'],
 ['갑각류 알레르기가 있어요','Sono allergico ai crostacei','Soy alérgico al marisco','Sou alérgico a marisco',"I'm allergic to shellfish",'甲殻類アレルギーがあります'],
-['우유가 들어있나요?','Contiene latte?','¿Contiene leche?','Contém leite?','Does this contain milk?','これに牛乳は入っていますか？'],
+['우유가 들어있나요?','Contiene latte?','¿Contiene leche?','Contém leite?','Does this have milk in it?','これに牛乳は入っていますか？'],
 ['채식주의자예요','Sono vegetariano','Soy vegetariano','Sou vegetariano',"I'm vegetarian",'ベジタリアンです'],
 ['매운 건 못 먹어요','Non posso mangiare piccante','No puedo comer picante','Não posso comer picante',"I can't eat spicy food",'辛いものは食べられません']],
 '🚆 길·교통':[
 ['여기 어떻게 가요?','Come arrivo qui?','¿Cómo llego aquí?','Como chego aqui?','How do I get here?','ここへはどう行きますか？'],
 ['역이 어디예요?',"Dov'è la stazione?",'¿Dónde está la estación?','Onde é a estação?','Where is the station?','駅はどこですか？'],
 ['몇 시에 출발해요?','A che ora parte?','¿A qué hora sale?','A que horas parte?','What time does it leave?','何時に出発しますか？'],
-['걸어서 얼마나 걸려요?','Quanto ci vuole a piedi?','¿Cuánto se tarda andando?','Quanto tempo a pé?','How long does it take on foot?','歩いてどのくらいかかりますか？'],
-['여기서 세워 주세요','Si fermi qui','Pare aquí, por favor','Pare aqui, por favor','Please stop here','ここで止めてください']],
+['걸어서 얼마나 걸려요?','Quanto ci vuole a piedi?','¿Cuánto se tarda andando?','Quanto tempo a pé?','How long does it take to walk?','歩いてどのくらいかかりますか？'],
+['여기서 세워 주세요','Si fermi qui','Pare aquí, por favor','Pare aqui, por favor','Please stop right here','ここで止めてください']],
 '🛍 쇼핑':[
-['얼마예요?','Quanto costa?','¿Cuánto cuesta?','Quanto custa?','How much is it?','いくらですか？'],
-['너무 비싸요','È troppo caro','Es demasiado caro','É muito caro',"It's too expensive",'高すぎます'],
+['얼마예요?','Quanto costa?','¿Cuánto cuesta?','Quanto custa?','How much is this?','いくらですか？'],
+['너무 비싸요','È troppo caro','Es demasiado caro','É muito caro',"That's too expensive",'高すぎます'],
 ['깎아 주실 수 있나요?','Può farmi uno sconto?','¿Me puede hacer un descuento?','Pode fazer um desconto?','Can you give me a discount?','少し安くなりませんか？'],
-['입어봐도 되나요?','Posso provarlo?','¿Me lo puedo probar?','Posso experimentar?','Can I try it on?','試着してもいいですか？'],
-['그냥 구경중이에요','Sto solo guardando','Solo estoy mirando','Estou só a ver',"I'm just looking",'見ているだけです'],
-['영수증 주세요','La ricevuta, per favore','El recibo, por favor','O recibo, por favor','The receipt, please','レシートをください']],
+['입어봐도 되나요?','Posso provarlo?','¿Me lo puedo probar?','Posso experimentar?','Can I try this on?','試着してもいいですか？'],
+['그냥 구경중이에요','Sto solo guardando','Solo estoy mirando','Estou só a ver',"I'm just looking, thanks",'見ているだけです'],
+['영수증 주세요','La ricevuta, per favore','El recibo, por favor','O recibo, por favor','Can I get a receipt?','レシートをください']],
 '🏨 숙소':[
 ['체크인할게요','Vorrei fare il check-in','Quiero hacer el check-in','Queria fazer o check-in',"I'd like to check in",'チェックインをお願いします'],
 ['예약했어요','Ho una prenotazione','Tengo una reserva','Tenho uma reserva','I have a reservation','予約しています'],
 ['와이파이 비번이 뭐예요?','Password del wi-fi?','¿Contraseña del wifi?','Qual é a senha do wi-fi?',"What's the Wi-Fi password?",'Wi-Fiのパスワードは何ですか？'],
-['짐 맡길 수 있나요?','Posso lasciare i bagagli?','¿Puedo dejar las maletas?','Posso deixar as malas?','Can I leave my luggage?','荷物を預けられますか？']],
+['짐 맡길 수 있나요?','Posso lasciare i bagagli?','¿Puedo dejar las maletas?','Posso deixar as malas?','Can I leave my bags here?','荷物を預けられますか？']],
 '🚑 응급':[
 ['도와주세요!','Aiuto!','¡Ayuda!','Socorro!','Help!','助けてください！'],
 ['경찰을 불러 주세요','Chiami la polizia','Llame a la policía','Chame a polícia','Please call the police','警察を呼んでください'],
-['지갑을 도둑맞았어요','Mi hanno rubato il portafoglio','Me han robado la cartera','Roubaram-me a carteira','My wallet was stolen','財布を盗まれました'],
+['지갑을 도둑맞았어요','Mi hanno rubato il portafoglio','Me han robado la cartera','Roubaram-me a carteira','My wallet got stolen','財布を盗まれました'],
 ['여권을 잃어버렸어요','Ho perso il passaporto','He perdido el pasaporte','Perdi o passaporte','I lost my passport','パスポートをなくしました'],
 ['몸이 안 좋아요','Non mi sento bene','No me siento bien','Não me sinto bem',"I don't feel well",'体調が悪いです'],
-['약국이 어디예요?',"Dov'è la farmacia?",'¿Dónde está la farmacia?','Onde é a farmácia?','Where is the pharmacy?','薬局はどこですか？']],
+['약국이 어디예요?',"Dov'è la farmacia?",'¿Dónde está la farmacia?','Onde é a farmácia?','Where is the nearest pharmacy?','薬局はどこですか？']],
 '🗣 막힐 때':[
-['잘 못 알아들었어요','Non ho capito','No he entendido','Não entendi',"I didn't understand",'わかりませんでした'],
-['천천히 말해 주세요','Più lentamente, per favore','Más despacio, por favor','Mais devagar, por favor','Please speak slowly','ゆっくり話してください'],
-['한 번만 더요','Può ripetere?','¿Puede repetirlo?','Pode repetir?','Could you repeat that?','もう一度お願いします'],
-['여기에 적어 주세요','Può scriverlo qui?','¿Puede escribirlo aquí?','Pode escrever aqui?','Could you write it here?','ここに書いてください'],
-['잠시만요','Un momento','Un momento','Um momento','One moment, please','少しお待ちください'],
-['사진 찍어 주실 수 있나요?','Può farmi una foto?','¿Me puede hacer una foto?','Pode tirar-me uma foto?','Could you take a photo of me?','写真を撮っていただけますか？']]
+['잘 못 알아들었어요','Non ho capito','No he entendido','Não entendi',"Sorry, I didn't catch that",'わかりませんでした'],
+['천천히 말해 주세요','Più lentamente, per favore','Más despacio, por favor','Mais devagar, por favor','Could you speak slower?','ゆっくり話してください'],
+['한 번만 더요','Può ripetere?','¿Puede repetirlo?','Pode repetir?','Could you say that again?','もう一度お願いします'],
+['여기에 적어 주세요','Può scriverlo qui?','¿Puede escribirlo aquí?','Pode escrever aqui?','Could you write it down here?','ここに書いてください'],
+['잠시만요','Un momento','Un momento','Um momento','One second, please','少しお待ちください'],
+['사진 찍어 주실 수 있나요?','Può farmi una foto?','¿Me puede hacer una foto?','Pode tirar-me uma foto?','Could you take a picture of me?','写真を撮っていただけますか？']]
 };
 
 /* ================= 숫자 조절 문구 ================= */
@@ -410,19 +410,19 @@ const ADJ=[
  it:n=>n==1?'Sono da solo':'Siamo in '+NIT[n],
  es:n=>n==1?'Vengo solo':'Somos '+NES[n],
  pt:n=>n==1?'Estou sozinho':'Somos '+NPT[n],
- en:n=>n==1?"I'm alone":'We are '+NEN[n],
+ en:n=>n==1?"It's just me":"There are "+NEN[n]+" of us",
  ja:n=>n==1?'ひとりです':JNIN[n]+'です'},
 {cat:'🍝 식당',u:'인분',mn:1,mx:12,df:2,k:n=>n+'인분 주세요',
  it:n=>n==1?'Una porzione, per favore':NIT[n]+' porzioni, per favore',
  es:n=>n==1?'Una ración, por favor':NES[n]+' raciones, por favor',
  pt:n=>n==1?'Uma dose, por favor':NPT[n]+' doses, por favor',
- en:n=>n==1?'One portion, please':NEN[n]+' portions, please',
+ en:n=>n==1?'One order, please':NEN[n]+' orders, please',
  ja:n=>JMAE[n]+'お願いします'},
 {cat:'🍝 식당',u:'병',mn:1,mx:6,df:1,k:n=>'생수 '+n+'병 주세요',
  it:n=>n==1?"Una bottiglia d'acqua naturale, per favore":NIT[n]+" bottiglie d'acqua naturale, per favore",
  es:n=>n==1?'Una botella de agua sin gas, por favor':NES[n]+' botellas de agua sin gas, por favor',
  pt:n=>n==1?'Uma garrafa de água sem gás, por favor':NPT[n]+' garrafas de água sem gás, por favor',
- en:n=>n==1?'A bottle of still water, please':NEN[n]+' bottles of still water, please',
+ en:n=>n==1?'A bottle of water, please':NEN[n]+' bottles of water, please',
  ja:n=>'お水を'+JHON[n]+'ください'},
 {cat:'🍝 식당',u:'잔',mn:1,mx:8,df:2,k:n=>'커피 '+n+'잔 주세요',
  it:n=>n==1?'Un caffè, per favore':NIT[n]+' caffè, per favore',
@@ -434,7 +434,7 @@ const ADJ=[
  it:n=>'Ho una prenotazione alle '+n,
  es:n=>'Tengo una reserva a las '+n,
  pt:n=>'Tenho uma reserva para as '+n+' horas',
- en:n=>'I have a reservation at '+n,
+ en:n=>'I have a reservation at '+(n>12?(n-12)+' PM':n+' AM'),
  ja:n=>JJI[n]+'に予約しています'},
 /* 🚆 길·교통 */
 {cat:'🚆 길·교통',u:'장',mn:1,mx:12,df:2,k:n=>'표 '+n+'장 주세요',
@@ -453,20 +453,20 @@ const ADJ=[
  it:n=>"C'è un treno alle "+n+'?',
  es:n=>'¿Hay un tren a las '+n+'?',
  pt:n=>'Há um comboio às '+n+' horas?',
- en:n=>'Is there a train at '+n+'?',
+ en:n=>'Is there a train at '+(n>12?(n-12)+' PM':n+' AM')+'?',
  ja:n=>JJI[n]+'の電車はありますか？'},
 /* 🛍 쇼핑 */
 {cat:'🛍 쇼핑',u:'개',mn:1,mx:12,df:2,k:n=>'이거 '+n+'개 주세요',
  it:n=>'Ne vorrei '+NIT[n]+', per favore',
  es:n=>'Quiero '+NES[n]+', por favor',
  pt:n=>'Queria '+NPT[n]+', por favor',
- en:n=>'I would like '+NEN[n]+', please',
+ en:n=>"I'll take "+NEN[n]+', please',
  ja:n=>'これを'+JTSU[n]+'ください'},
 {cat:'🛍 쇼핑',u:'유로',mn:5,mx:200,df:20,st:5,k:n=>n+'유로에 해주실 수 있나요?',
  it:n=>'Me lo fa a '+n+' euro?',
  es:n=>'¿Me lo deja en '+n+' euros?',
  pt:n=>'Pode fazer por '+n+' euros?',
- en:n=>'Could you do '+n+' euros?',
+ en:n=>'Would you take '+n+' euros?',
  ja:n=>n+'ユーロにしてもらえますか？'},
 /* 🏨 숙소 */
 {cat:'🏨 숙소',u:'박',mn:1,mx:14,df:2,k:n=>n+'박 묵을 거예요',
@@ -479,7 +479,7 @@ const ADJ=[
  it:n=>n==1?'Un asciugamano, per favore':NIT[n]+' asciugamani, per favore',
  es:n=>n==1?'Una toalla, por favor':NES[n]+' toallas, por favor',
  pt:n=>n==1?'Uma toalha, por favor':NPT[n]+' toalhas, por favor',
- en:n=>n==1?'One towel, please':NEN[n]+' towels, please',
+ en:n=>n==1?'Could I get a towel?':'Could I get '+NEN[n]+' towels?',
  ja:n=>'タオルを'+JMAI[n]+'ください'}
 ];
 
