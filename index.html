@@ -181,6 +181,19 @@ footer{padding:10px 12px 12px;background:var(--pnl);border-top:1px solid var(--l
 #lvtx.idle{color:var(--sub);font-size:19px;font-weight:600;text-shadow:none;letter-spacing:0}
 #lvdone{flex:0 0 auto;padding:21px;border-radius:18px;background:#e04352;color:#fff;font-size:19px;font-weight:800;box-shadow:0 6px 22px #e0435240}
 .lvsub{flex:0 0 auto;text-align:center;font-size:12px;color:var(--sub);margin-top:10px;line-height:1.5}
+.bkt{margin-top:9px;padding:8px 10px;border-radius:9px;background:var(--tint);border:1px dashed var(--line);font-size:12px;line-height:1.5;color:var(--sub)}
+.bkt b{color:var(--txt);font-weight:700}
+.bkt.bad{background:var(--wbg);border:1px solid var(--wbd);color:var(--wtx)}
+.bkt.bad b{color:var(--wtx)}
+.tag.w{background:var(--wbg);color:var(--wtx)}
+.tag.g{background:var(--ok);color:var(--oktx)}
+.ebtn{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.ebtn button{flex:1;min-width:120px;padding:11px 8px;border-radius:10px;background:var(--wbd);color:var(--wtx);font-size:12.5px;font-weight:800}
+.ebtn button.alt{background:var(--chip2);color:var(--txt);border:1px solid var(--line)}
+.tip{margin-top:8px;font-size:11.5px;line-height:1.6;opacity:.85;font-weight:500}
+.frow{display:flex;align-items:center;gap:7px;margin-top:8px}
+.frow .chip{flex:0 0 auto;font-size:11.5px;padding:6px 10px}
+.frow .nn{flex:1;text-align:right;font-size:10.5px;color:var(--sub);opacity:.75;line-height:1.4}
 #big{position:fixed;inset:0;background:var(--bigbg);color:var(--bigtx);z-index:99;display:none;flex-direction:column;align-items:center;justify-content:center;padding:26px;text-align:center}
 #big.on{display:flex}
 #big:before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:var(--stripe)}
@@ -222,7 +235,13 @@ footer{padding:10px 12px 12px;background:var(--pnl);border-top:1px solid var(--l
         ✈️ <b>문구집</b> — 인터넷 없이 완전 작동<br>
         🔢 <b>조절 문구</b> — 인원·개수·시간을 ＋−로 변경<br>
         ⭐ <b>저장</b> — 분류를 골라 문구집에 추가<br>
-        💾 <b>저장된 번역</b> — 오프라인에서도 재사용
+        💾 <b>저장된 번역</b> — 오프라인에서도 재사용<br>
+        🔁 <b>역번역 확인</b> — 번역이 제대로 됐는지 스스로 검사
+      </div>
+      <div class="legend" style="margin-top:10px">
+        ⚠️ <b>상대 말이 한글 소리로 나온다면</b><br>
+        설정 → 일반 → 키보드 → <b>받아쓰기 언어</b>에서<br>
+        해당 국가 언어를 켜주세요 (1회만 하면 됩니다)
       </div>
     </div>
     <div id="lbar" class="lbar" style="display:none">
@@ -263,7 +282,7 @@ footer{padding:10px 12px 12px;background:var(--pnl);border-top:1px solid var(--l
     <button id="sd">번역</button>
   </div>
   <div class="st" id="st"></div>
-  <div class="netnote">🌐 이 탭은 인터넷이 필요합니다</div>
+  <div class="frow"><button class="chip" id="bkchk">🔁 역번역 확인</button><span class="nn">🌐 이 탭은 인터넷이 필요합니다</span></div>
 </footer>
 
 <div id="sheet"><div class="sh">
@@ -332,81 +351,133 @@ function say(t,c,r){if(!window.speechSynthesis||!t)return;unlock();speechSynthes
   if(v)u.voice=v;setTimeout(()=>speechSynthesis.speak(u),60)}
 
 /* ================= 번역 + 캐시 ================= */
-let cache={},fromCache=false;
+let cache={},fromCache=false,lastEngine='';
 try{cache=JSON.parse(localStorage.getItem('tc'))||{}}catch(e){}
 function cSet(k,v){cache[k]=v;try{localStorage.setItem('tc',JSON.stringify(cache))}catch(e){}}
+
+/* ---- 문자 종류 판별 (오인식 잡아내는 핵심) ---- */
+const RE_KO=/[가-힣ㄱ-ㅎㅏ-ㅣ]/g,RE_JA=/[ぁ-んァ-ヶ一-龯]/g,RE_LAT=/[A-Za-zÀ-ÿ]/g;
+function cnt(t,re){const m=(t||'').match(re);return m?m.length:0}
+function scriptOf(t){
+  const k=cnt(t,RE_KO),j=cnt(t,RE_JA),l=cnt(t,RE_LAT),tot=k+j+l;
+  if(!tot)return '?';
+  if(k/tot>=.55)return 'ko';
+  if(j/tot>=.40)return 'ja';
+  if(l/tot>=.55)return 'lat';
+  return '?'}
+function scriptOK(t,lang){
+  const s=scriptOf(t);if(s=='?')return true;
+  if(lang=='ko')return s=='ko';
+  if(lang=='ja')return s=='ja'||s=='lat';
+  return s=='lat'}
+function nrm(t){return (t||'').toLowerCase().replace(/[\s.,!?¿¡…。、·'’"«»\-]/g,'')}
+
+/* ---- 문장 다듬기: 구두점을 붙여 보내면 번역이 훨씬 자연스러워짐 ---- */
+const QW=/(뭐|무엇|어디|언제|얼마|몇|어떻게|어떤|왜|누구|누가)/;
+const QE=/(나요|까요|을까|ㄹ까|가요|해요|예요|이에요|에요|어요|아요|는데요|시겠어요|주실래요|주시겠어요|맞아요|있어요|없어요|되나|될까|합니까|입니까|습니까|ㅂ니까)\s*$/;
+function prep(t,f){
+  t=(t||'').replace(/\s+/g,' ').trim();
+  if(!t)return t;
+  if(/[.!?…。？！]$/.test(t))return t;
+  if(f!='ko')return t+'.';
+  const q=(QW.test(t)&&QE.test(t))||/(나요|까요|을까요|ㄹ까요|합니까|입니까|습니까|되나요|될까요|있나요|없나요|주시겠어요|주실래요)\s*$/.test(t);
+  return t+(q?'?':'.')}
+
+/* ---- 구글 번역 (엔드포인트 2종) ---- */
+async function gx(t,f,to){
+  const eps=[
+   {u:'https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl='+f+'&tl='+to+'&q=',p:d=>(d[0]||[]).map(x=>x[0]).join('')},
+   {u:'https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl='+f+'&tl='+to+'&q=',p:d=>Array.isArray(d)?(Array.isArray(d[0])?d[0].join(''):String(d[0]||'')):(d&&d.sentences?d.sentences.map(x=>x.trans).join(''):'')}
+  ];
+  for(const e of eps){
+    try{const r=await fetch(e.u+encodeURIComponent(t));if(!r.ok)continue;
+      const s=(e.p(await r.json())||'').trim();if(s)return s}catch(err){}}
+  return ''}
+
+/* ---- 메인 번역: 결과 검증 → 이상하면 캐시에 저장하지 않음 ---- */
 async function tr(t,f,to){
-  const key=f+'>'+to+'>'+t.trim().toLowerCase();
-  if(cache[key]){fromCache=true;return cache[key]}
-  fromCache=false;
+  const raw=(t||'').trim(),key=f+'>'+to+'>'+raw.toLowerCase();
+  if(cache[key]){fromCache=true;lastEngine='C';return cache[key]}
+  fromCache=false;lastEngine='';
   if(!navigator.onLine)throw new Error('📵 인터넷이 없어 번역할 수 없어요.\n(전에 번역한 문장은 오프라인에서도 나옵니다)\n\n📖 문구집을 사용하세요.');
-  const er=[];
-  try{const r=await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl='+f+'&tl='+to+'&dt=t&q='+encodeURIComponent(t));
-    if(r.ok){const d=await r.json();const s=(d[0]||[]).map(x=>x[0]).join('').trim();if(s){cSet(key,s);return s}er.push('G:빈응답')}
-    else er.push('G:'+r.status)}catch(e){er.push('G:차단')}
-  try{const r=await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(t)+'&langpair='+f+'|'+to);
-    if(r.ok){const d=await r.json();const s=(d.responseData&&d.responseData.translatedText||'').trim();
-      if(s&&!/MYMEMORY|INVALID|QUERY LENGTH/i.test(s)){cSet(key,s);return s}er.push('M:거부')}
-    else er.push('M:'+r.status)}catch(e){er.push('M:차단')}
-  throw new Error('번역 서버에 연결 못했어요.\n['+er.join(' / ')+']\n\n📖 문구집은 그대로 쓸 수 있어요.');
+  const q=prep(raw,f),same=x=>nrm(x)==nrm(raw);
+  const g=await gx(q,f,to);
+  if(g&&scriptOK(g,to)&&!same(g)){lastEngine='G';cSet(key,g);return g}
+  let m='';
+  try{const r=await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(q)+'&langpair='+f+'|'+to);
+    if(r.ok){const d=await r.json();m=((d.responseData&&d.responseData.translatedText)||'').trim();
+      if(/MYMEMORY|INVALID|QUERY LENGTH|NO QUERY/i.test(m))m=''}}catch(e){}
+  if(m&&scriptOK(m,to)&&!same(m)){lastEngine='M';cSet(key,m);return m}
+  if(g){lastEngine='G?';return g}
+  if(m){lastEngine='M?';return m}
+  throw new Error('번역 서버에 연결 못했어요.\n\n📖 문구집은 그대로 쓸 수 있어요.');
 }
+/* ---- 역번역(품질 자체 점검) ---- */
+async function back(t,f,to){try{return await gx(prep(t,f),f,to)}catch(e){return ''}}
+function sim(a,b){a=nrm(a);b=nrm(b);if(!a||!b)return 0;if(a==b)return 1;
+  const A=new Set(),B=new Set();
+  for(let i=0;i<a.length-1;i++)A.add(a.substr(i,2));
+  for(let i=0;i<b.length-1;i++)B.add(b.substr(i,2));
+  if(!A.size||!B.size)return 0;
+  let n=0;A.forEach(x=>{if(B.has(x))n++});
+  return 2*n/(A.size+B.size)}
 
 /* ================= 문구집 (ko, it, es, pt, en, ja) ================= */
 const BOOK={
 '💬 인사·기본':[
 ['안녕하세요 (낮)','Buongiorno','Buenos días','Bom dia','Hello','こんにちは'],
-['안녕하세요 (저녁)','Buonasera','Buenas tardes','Boa noite','Good evening','こんばんは'],
+['안녕하세요 (저녁)','Buonasera','Buenas noches','Boa tarde','Good evening','こんばんは'],
 ['감사합니다','Grazie mille','Muchas gracias','Muito obrigado','Thank you so much','ありがとうございます'],
 ['실례합니다','Mi scusi','Perdone','Com licença','Excuse me','すみません'],
 ['부탁합니다','Per favore','Por favor','Por favor','Please','お願いします'],
 ['영어 하세요?','Parla inglese?','¿Habla inglés?','Fala inglês?','Do you speak English?','英語は話せますか？'],
-['한국에서 왔어요','Vengo dalla Corea','Soy de Corea','Sou da Coreia',"I'm from Korea",'韓国から来ました']],
+['한국에서 왔어요','Vengo dalla Corea del Sud','Soy de Corea del Sur','Sou da Coreia do Sul',"I'm from South Korea",'韓国から来ました']],
 '🍝 식당':[
 ['메뉴판 주세요','Il menù, per favore','La carta, por favor','A ementa, por favor','Could I see the menu?','メニューをお願いします'],
 ['추천해 주세요','Cosa mi consiglia?','¿Qué me recomienda?','O que recomenda?','What do you recommend?','おすすめは何ですか？'],
-['이거 주세요','Prendo questo','Quiero esto, por favor','Queria este, por favor',"I'll have this, please",'これをください'],
+['이거 주세요','Prendo questo, per favore','Quería esto, por favor','Queria isto, por favor',"I'll have this, please",'これをください'],
 ['계산서 주세요','Il conto, per favore','La cuenta, por favor','A conta, por favor','Check, please','お会計をお願いします'],
-['카드 되나요?','Posso pagare con la carta?','¿Puedo pagar con tarjeta?','Posso pagar com cartão?','Can I pay with a card?','カードで払えますか？'],
-['포장해 주세요','Da portare via','Para llevar','Para levar, por favor','To go, please','持ち帰りでお願いします'],
+['카드 되나요?','Si può pagare con la carta?','¿Se puede pagar con tarjeta?','Aceitam cartão?','Do you take card?','カードで払えますか？'],
+['포장해 주세요','Da portare via, per favore','Para llevar, por favor','Para levar, por favor','To go, please','持ち帰りでお願いします'],
 ['화장실 어디예요?',"Dov'è il bagno?",'¿Dónde está el baño?','Onde é a casa de banho?','Where is the restroom?','トイレはどこですか？']],
 '⚠️ 알레르기':[
-['견과류 알레르기가 있어요','Sono allergico alla frutta secca','Soy alérgico a los frutos secos','Sou alérgico a frutos secos',"I'm allergic to nuts",'ナッツアレルギーがあります'],
-['갑각류 알레르기가 있어요','Sono allergico ai crostacei','Soy alérgico al marisco','Sou alérgico a marisco',"I'm allergic to shellfish",'甲殻類アレルギーがあります'],
-['우유가 들어있나요?','Contiene latte?','¿Contiene leche?','Contém leite?','Does this have milk in it?','これに牛乳は入っていますか？'],
-['채식주의자예요','Sono vegetariano','Soy vegetariano','Sou vegetariano',"I'm vegetarian",'ベジタリアンです'],
+['견과류 알레르기가 있어요','Ho un’allergia alla frutta a guscio','Tengo alergia a los frutos secos','Tenho alergia a frutos secos',"I have a nut allergy",'ナッツアレルギーがあります'],
+['갑각류 알레르기가 있어요','Ho un’allergia ai crostacei','Tengo alergia al marisco','Tenho alergia a marisco',"I have a shellfish allergy",'甲殻類アレルギーがあります'],
+['우유가 들어있나요?','Contiene latte o latticini?','¿Lleva leche o lácteos?','Leva leite ou lácteos?','Does this contain milk or dairy?','乳製品は入っていますか？'],
+['채식주의자예요','Non mangio carne né pesce','No como carne ni pescado','Não como carne nem peixe',"I don't eat meat or fish",'肉と魚は食べません'],
 ['매운 건 못 먹어요','Non posso mangiare piccante','No puedo comer picante','Não posso comer picante',"I can't eat spicy food",'辛いものは食べられません']],
 '🚆 길·교통':[
-['여기 어떻게 가요?','Come arrivo qui?','¿Cómo llego aquí?','Como chego aqui?','How do I get here?','ここへはどう行きますか？'],
+['여기 어떻게 가요? (지도 보여주며)','Come ci arrivo?','¿Cómo llego hasta aquí?','Como chego aqui?','How do I get to this place?','ここへはどう行きますか？'],
 ['역이 어디예요?',"Dov'è la stazione?",'¿Dónde está la estación?','Onde é a estação?','Where is the station?','駅はどこですか？'],
 ['몇 시에 출발해요?','A che ora parte?','¿A qué hora sale?','A que horas parte?','What time does it leave?','何時に出発しますか？'],
 ['걸어서 얼마나 걸려요?','Quanto ci vuole a piedi?','¿Cuánto se tarda andando?','Quanto tempo a pé?','How long does it take to walk?','歩いてどのくらいかかりますか？'],
-['여기서 세워 주세요','Si fermi qui','Pare aquí, por favor','Pare aqui, por favor','Please stop right here','ここで止めてください']],
+['여기서 세워 주세요','Si fermi qui, per favore','Pare aquí, por favor','Pare aqui, por favor','Please stop here','ここで止めてください']],
 '🛍 쇼핑':[
 ['얼마예요?','Quanto costa?','¿Cuánto cuesta?','Quanto custa?','How much is this?','いくらですか？'],
 ['너무 비싸요','È troppo caro','Es demasiado caro','É muito caro',"That's too expensive",'高すぎます'],
-['깎아 주실 수 있나요?','Può farmi uno sconto?','¿Me puede hacer un descuento?','Pode fazer um desconto?','Can you give me a discount?','少し安くなりませんか？'],
+['깎아 주실 수 있나요?','Mi può fare uno sconto?','¿Me puede hacer un descuento?','Pode fazer um desconto?','Could you give me a discount?','少し安くなりませんか？'],
 ['입어봐도 되나요?','Posso provarlo?','¿Me lo puedo probar?','Posso experimentar?','Can I try this on?','試着してもいいですか？'],
-['그냥 구경중이에요','Sto solo guardando','Solo estoy mirando','Estou só a ver',"I'm just looking, thanks",'見ているだけです'],
-['영수증 주세요','La ricevuta, per favore','El recibo, por favor','O recibo, por favor','Can I get a receipt?','レシートをください']],
+['그냥 구경중이에요','Sto solo dando un’occhiata, grazie','Solo estoy mirando, gracias','Estou só a ver, obrigado',"I'm just looking, thanks",'見ているだけです'],
+['영수증 주세요','Mi dà la ricevuta, per favore?','¿Me da el ticket, por favor?','O recibo, por favor','Could I get a receipt?','レシートをください']],
 '🏨 숙소':[
 ['체크인할게요','Vorrei fare il check-in','Quiero hacer el check-in','Queria fazer o check-in',"I'd like to check in",'チェックインをお願いします'],
 ['예약했어요','Ho una prenotazione','Tengo una reserva','Tenho uma reserva','I have a reservation','予約しています'],
 ['와이파이 비번이 뭐예요?','Password del wi-fi?','¿Contraseña del wifi?','Qual é a senha do wi-fi?',"What's the Wi-Fi password?",'Wi-Fiのパスワードは何ですか？'],
-['짐 맡길 수 있나요?','Posso lasciare i bagagli?','¿Puedo dejar las maletas?','Posso deixar as malas?','Can I leave my bags here?','荷物を預けられますか？']],
+['짐 맡길 수 있나요?','Posso lasciare qui i bagagli?','¿Puedo dejar aquí las maletas?','Posso deixar aqui as malas?','Can I leave my bags here?','荷物を預かってもらえますか？']],
 '🚑 응급':[
 ['도와주세요!','Aiuto!','¡Ayuda!','Socorro!','Help!','助けてください！'],
 ['경찰을 불러 주세요','Chiami la polizia','Llame a la policía','Chame a polícia','Please call the police','警察を呼んでください'],
-['지갑을 도둑맞았어요','Mi hanno rubato il portafoglio','Me han robado la cartera','Roubaram-me a carteira','My wallet got stolen','財布を盗まれました'],
+['지갑을 도둑맞았어요','Mi hanno rubato il portafoglio','Me han robado la cartera','Roubaram-me a carteira','My wallet was stolen','財布を盗まれました'],
 ['여권을 잃어버렸어요','Ho perso il passaporto','He perdido el pasaporte','Perdi o passaporte','I lost my passport','パスポートをなくしました'],
-['몸이 안 좋아요','Non mi sento bene','No me siento bien','Não me sinto bem',"I don't feel well",'体調が悪いです'],
+['몸이 안 좋아요','Non mi sento bene','No me encuentro bien','Não me sinto bem',"I don't feel well",'体調が悪いです'],
 ['약국이 어디예요?',"Dov'è la farmacia?",'¿Dónde está la farmacia?','Onde é a farmácia?','Where is the nearest pharmacy?','薬局はどこですか？']],
 '🗣 막힐 때':[
-['잘 못 알아들었어요','Non ho capito','No he entendido','Não entendi',"Sorry, I didn't catch that",'わかりませんでした'],
-['천천히 말해 주세요','Più lentamente, per favore','Más despacio, por favor','Mais devagar, por favor','Could you speak slower?','ゆっくり話してください'],
-['한 번만 더요','Può ripetere?','¿Puede repetirlo?','Pode repetir?','Could you say that again?','もう一度お願いします'],
+['잘 못 알아들었어요','Scusi, non ho capito','Perdone, no le he entendido','Desculpe, não entendi',"Sorry, I didn't catch that",'すみません、聞き取れませんでした'],
+['천천히 말해 주세요','Può parlare più lentamente?','¿Puede hablar más despacio?','Pode falar mais devagar?','Could you speak more slowly?','もう少しゆっくり話してください'],
+['한 번만 더요','Può ripetere, per favore?','¿Me lo puede repetir?','Pode repetir, por favor?','Could you say that again?','もう一度お願いします'],
 ['여기에 적어 주세요','Può scriverlo qui?','¿Puede escribirlo aquí?','Pode escrever aqui?','Could you write it down here?','ここに書いてください'],
 ['잠시만요','Un momento','Un momento','Um momento','One second, please','少しお待ちください'],
-['사진 찍어 주실 수 있나요?','Può farmi una foto?','¿Me puede hacer una foto?','Pode tirar-me uma foto?','Could you take a picture of me?','写真を撮っていただけますか？']]
+['사진 찍어 주실 수 있나요?','Ci può fare una foto?','¿Nos puede hacer una foto?','Pode tirar-nos uma foto?','Could you take a photo of us?','写真を撮っていただけますか？']]
 };
 
 /* ================= 숫자 조절 ================= */
@@ -549,8 +620,13 @@ $('sheet').onclick=e=>{if(e.target.id=='sheet'){$('sheet').classList.remove('on'
 
 /* ================= 대화 ================= */
 const log=$('log');
+let bkOn=localStorage.getItem('bk')=='1';
+function bkUI(){$('bkchk').classList.toggle('on',bkOn)}
+$('bkchk').onclick=()=>{bkOn=!bkOn;localStorage.setItem('bk',bkOn?'1':'0');bkUI();renderLog()};
+bkUI();
 function getH(){try{return JSON.parse(localStorage.getItem('hist'))||[]}catch(e){return[]}}
 function setH(a){localStorage.setItem('hist',JSON.stringify(a.slice(-250)))}
+
 function bubble(e){
   const b=document.createElement('div');
   b.className='bub'+(e.dir=='me'?' me':'');
@@ -558,7 +634,7 @@ function bubble(e){
   b.innerHTML='<button class="xb">✕</button><div class="src"></div><div class="out"></div>'+
    '<div class="acts"><button class="chip a1">🔊 다시</button><button class="chip a2">🐢 느리게</button>'+
    '<button class="chip a3">🔍 크게</button><button class="chip a4">⭐ 문구집에 저장</button>'+
-   '<span class="tag">💾 오프라인 저장됨</span></div>';
+   '<span class="tag g">💾 오프라인 저장됨</span></div>';
   b.querySelector('.src').textContent=e.src;
   b.querySelector('.out').textContent=e.out;
   b.querySelector('.a1').onclick=()=>say(e.out,code,1);
@@ -571,7 +647,16 @@ function bubble(e){
       btn.classList.add('on');btn.textContent='✅ '+c;
       localStorage.setItem('lastcat',c);fillSel(c)})};
   b.querySelector('.xb').onclick=()=>{const a=getH();const i=a.findIndex(x=>x.id==e.id);if(i>-1)a.splice(i,1);setH(a);renderLog()};
+  /* 역번역 확인 결과 표시 */
+  if(e.bk){
+    const d=document.createElement('div');
+    const ok=(e.bs||0)>=.42;
+    d.className='bkt'+(ok?'':' bad');
+    d.innerHTML=(ok?'🔁 역번역 확인: <b></b>':'⚠️ 뜻이 달라질 수 있어요 → <b></b><div class="tip">더 짧고 단순한 문장으로 다시 말해보세요.</div>');
+    d.querySelector('b').textContent=e.bk;
+    b.querySelector('.acts').before(d)}
   return b}
+
 function renderLog(){
   const a=getH().filter(x=>x.lang==cur);log.innerHTML='';
   $('hint').style.display=a.length?'none':'block';
@@ -579,22 +664,48 @@ function renderLog(){
   $('cnt').textContent=L[cur].f+' '+L[cur].n+' 기록 '+a.length+'개 · 💾 오프라인 재사용 가능';
   a.forEach(e=>log.appendChild(bubble(e)));
   log.parentElement.scrollTop=1e6}
+
 $('clr').onclick=()=>{
   const a=getH(),n=a.filter(x=>x.lang==cur).length;if(!n)return;
   if(confirm(L[cur].n+' 기록 '+n+'개를 모두 삭제할까요?\n(문구집에 저장한 문장과 다른 언어 기록은 그대로 남습니다)')){
     setH(a.filter(x=>x.lang!=cur));renderLog()}};
-async function run(text,dir){
+
+/* ---- 오인식 경고 버블 ---- */
+function misBubble(text,dir){
+  const pb=document.createElement('div');
+  pb.className='bub err'+(dir=='me'?' me':'');
+  pb.innerHTML='<button class="xb">✕</button><div class="out"></div>'+
+    '<div class="ebtn"><button class="rt">🎙 다시 말하기</button><button class="alt fx">🔤 그래도 번역</button></div>';
+  pb.querySelector('.out').textContent=
+    '⚠️ '+L[cur].n+'가 아니라 한국어 소리로 인식됐어요.\n\n인식된 내용: 「'+text+'」\n\n'+
+    '👉 아이폰 → 설정 → 일반 → 키보드 → 받아쓰기 언어에서\n   '+L[cur].f+' '+L[cur].n+'를 켜주세요.\n'+
+    '   (켜져 있으면 조금 더 크고 또박또박 말해주세요)';
+  pb.querySelector('.xb').onclick=()=>pb.remove();
+  pb.querySelector('.rt').onclick=()=>{pb.remove();listen(dir)};
+  pb.querySelector('.fx').onclick=()=>{pb.remove();run(text,dir,true)};
+  log.appendChild(pb);log.parentElement.scrollTop=1e6}
+
+async function run(text,dir,force){
   if(!text||!text.trim())return;text=text.trim();
   $('hint').style.display='none';
+  const f=dir=='me'?'ko':L[cur].s,t2=dir=='me'?L[cur].s:'ko';
+  const code=dir=='me'?L[cur].c:'ko-KR';
+  /* 상대가 말했는데 한국어 글자로 인식된 경우 = 받아쓰기 언어 미설정 */
+  if(dir=='you'&&!force&&!scriptOK(text,L[cur].s)&&scriptOf(text)=='ko'){misBubble(text,dir);return}
   const pb=document.createElement('div');
   pb.className='bub wait'+(dir=='me'?' me':'');
   pb.innerHTML='<div class="src"></div><div class="out">번역 중…</div>';
   pb.querySelector('.src').textContent=text;
   log.appendChild(pb);log.parentElement.scrollTop=1e6;
-  const f=dir=='me'?'ko':L[cur].s,t2=dir=='me'?L[cur].s:'ko';
-  const code=dir=='me'?L[cur].c:'ko-KR';
-  try{const o=await tr(text,f,t2);pb.remove();
-    const a=getH();a.push({id:Date.now()+''+Math.random().toString(36).slice(2,6),lang:cur,dir:dir,src:text,out:o});
+  try{
+    const o=await tr(text,f,t2);
+    let bk='',bs=0;
+    if(bkOn&&navigator.onLine&&!fromCache){
+      pb.querySelector('.out').textContent='역번역 확인 중…';
+      bk=await back(o,t2,f);if(bk)bs=sim(text,bk)}
+    pb.remove();
+    const a=getH();
+    a.push({id:Date.now()+''+Math.random().toString(36).slice(2,6),lang:cur,dir:dir,src:text,out:o,bk:bk||'',bs:bs});
     setH(a);renderLog();say(o,code,1)}
   catch(e){pb.className='bub err';
     pb.innerHTML='<button class="xb">✕</button><div class="out"></div>';
@@ -613,30 +724,42 @@ function openLive(dir){
   $('lvdone').textContent=me?'⏹ 다 말했어요':L[cur].done;
   $('lvsub').textContent=(me?'말한 내용이 '+L[cur].n+'로 번역됩니다':L[cur].sub)+'  ·  🌐';
   $('live').classList.add('on')}
+
 function listen(dir){
   if(!SR){$('st').textContent='이 브라우저는 음성인식 미지원 — 아래 타이핑을 쓰세요';return}
   if(!navigator.onLine){$('st').textContent='📵 오프라인 — 음성인식 불가. 📖문구집을 쓰세요';return}
   if(ing){if(curStop)curStop();return}
   unlock();if(window.speechSynthesis)speechSynthesis.cancel();
-  const rc=new SR();rc.lang=dir=='me'?'ko-KR':L[cur].c;rc.interimResults=true;rc.continuous=false;
-  let fin='',best='',done=false,tmr=null,auto=null;
+  const want=dir=='me'?'ko-KR':L[cur].c;
+  const rc=new SR();
+  rc.lang=want;rc.interimResults=true;rc.continuous=false;
+  if('maxAlternatives' in rc)rc.maxAlternatives=3;
+  let fin='',best='',alts=[],done=false,tmr=null,auto=null;
   openLive(dir);
   function finish(){if(done)return;done=true;clearTimeout(tmr);clearTimeout(auto);
     ing=false;curStop=null;$('live').classList.remove('on');
-    const txt=(fin.trim()||best.trim());
+    let txt=(fin.trim()||best.trim());
+    /* 상대 발화인데 한글로 인식됐다면, 대안 후보 중 현지어 표기가 있으면 그걸 채택 */
+    if(txt&&dir=='you'&&!scriptOK(txt,L[cur].s)){
+      const g=alts.find(x=>scriptOK(x,L[cur].s)&&scriptOf(x)!='ko');
+      if(g)txt=g}
     if(txt){$('st').textContent='';run(txt,dir)}
     else $('st').textContent='소리가 안 들렸어요. 다시 눌러주세요'}
   curStop=()=>{try{rc.stop()}catch(e){};clearTimeout(tmr);tmr=setTimeout(finish,1200)};
   $('lvdone').onclick=()=>{if(curStop)curStop()};
   rc.onstart=()=>{ing=true;auto=setTimeout(()=>{if(!done&&curStop)curStop()},15000)};
   rc.onresult=e=>{let im='';
-    for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;
-      if(e.results[i].isFinal)fin+=t;else im+=t}
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const R=e.results[i],t=R[0].transcript;
+      for(let k=1;k<R.length;k++){const c=R[k]&&R[k].transcript;if(c&&alts.indexOf(c)<0)alts.push(c)}
+      if(R.isFinal)fin+=t;else im+=t}
     const all=(fin+im).trim();
     if(all){best=fin+im;$('lvtx').className='';$('lvtx').textContent=all}};
   rc.onerror=e=>{
     if(e.error=='not-allowed'||e.error=='service-not-allowed'){done=true;ing=false;curStop=null;$('live').classList.remove('on');$('st').textContent='마이크 권한을 허용해 주세요 (설정 > Safari > 마이크)'}
-    else if(e.error=='network'){done=true;ing=false;curStop=null;$('live').classList.remove('on');$('st').textContent='📵 음성인식은 인터넷이 필요해요 (📖문구집은 오프라인 가능)'}};
+    else if(e.error=='network'){done=true;ing=false;curStop=null;$('live').classList.remove('on');$('st').textContent='📵 음성인식은 인터넷이 필요해요 (📖문구집은 오프라인 가능)'}
+    else if(e.error=='language-not-supported'){done=true;ing=false;curStop=null;$('live').classList.remove('on');
+      $('st').textContent='⚠️ 이 기기에 '+L[cur].n+' 받아쓰기가 없어요 → 설정>일반>키보드>받아쓰기 언어'}};
   rc.onend=finish;
   try{rc.start()}catch(e){$('live').classList.remove('on');$('st').textContent='다시 눌러주세요'}}
 $('b1').onclick=()=>listen('me');
@@ -753,8 +876,15 @@ $('madd').onclick=async()=>{
     $('madd').textContent='＋ 문구집에 추가'}};
 $('mtest').onclick=async()=>{
   $('mtest').textContent='확인 중…';
-  try{const o=await tr('물 한 병 주세요','ko',L[cur].s);
-    alert('✅ 정상! ('+L[cur].n+')\n\n결과: '+o+(fromCache?'\n\n(💾 저장된 값 — 오프라인 사용 가능)':'\n\n(🌐 서버에서 새로 번역)'))}
+  const S=L[cur].s;let msg='';
+  try{
+    const o=await tr('계산서 주세요','ko',S);
+    msg+='✅ 한국어 → '+L[cur].n+'\n   "'+o+'"  ['+lastEngine+']\n\n';
+    const r=await tr(o,S,'ko');
+    const okScript=scriptOK(r,'ko');
+    msg+=(okScript?'✅':'⚠️')+' '+L[cur].n+' → 한국어\n   "'+r+'"\n\n';
+    msg+=okScript?'정상 작동합니다 👍':'⚠️ 역방향 번역이 이상합니다. 잠시 후 다시 시도해 주세요.';
+    alert(msg)}
   catch(e){alert('❌ 실패\n\n'+e.message)}
   $('mtest').textContent='🔧 번역 서버 연결 테스트'};
 
@@ -778,6 +908,26 @@ document.querySelectorAll('.lb').forEach(b=>b.onclick=()=>{
   labels();renderLog();book($('srch').value);mine();$('st').textContent=''});
 document.body.className=cur;
 document.querySelectorAll('.lb').forEach(x=>x.classList.toggle('on',x.dataset.l==cur));
+/* ---- 이전 버전에서 잘못 저장된 번역 캐시 자동 정리 ---- */
+(function cleanCache(){
+  if(localStorage.getItem('cv')=='2')return;
+  let n=0;
+  try{
+    Object.keys(cache).forEach(k=>{
+      const p=k.split('>');if(p.length<3)return;
+      const to=p[1],srcTxt=p.slice(2).join('>'),val=cache[k];
+      /* 번역 결과가 목표 언어 문자체계와 안 맞거나, 원문과 사실상 동일하면 삭제 */
+      if(!scriptOK(val,to)||nrm(val)==nrm(srcTxt)){delete cache[k];n++}});
+    if(n)localStorage.setItem('tc',JSON.stringify(cache));
+  }catch(e){}
+  /* 기록에 남은 오인식 결과(원문=결과)도 정리 */
+  try{
+    const h=getH(),h2=h.filter(x=>!(x.dir=='you'&&nrm(x.src)==nrm(x.out)));
+    if(h2.length!=h.length)setH(h2);
+  }catch(e){}
+  localStorage.setItem('cv','2');
+  if(n)setTimeout(()=>{$('st').textContent='🧹 잘못 저장된 번역 '+n+'개를 정리했어요';setTimeout(()=>$('st').textContent='',3500)},900);
+})();
 labels();renderLog();getCats();fillSel();book('');mine();setTimeout(lv,600);
 </script>
 </html>
