@@ -197,7 +197,7 @@ footer{padding:10px 12px 12px;background:var(--pnl);border-top:1px solid var(--l
 .vf{margin-top:10px;padding:12px 13px;border-radius:13px;background:var(--pnl2);border:1px solid var(--line)}
 .vf.g{border-color:var(--acc);background:var(--tint)}
 .vf.w{background:var(--wbg);border:1px solid var(--wbd)}
-.vfh{font-size:11.5px;font-weight:800;color:var(--sub);letter-spacing:.2px;margin-bottom:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.vfh{font-size:11.5px;font-weight:800;color:var(--sub);margin-bottom:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .vfh .bd{padding:3px 8px;border-radius:7px;font-size:10px;font-weight:800;background:var(--chip2)}
 .vfh .bd.ok{background:var(--ok);color:var(--oktx)}
 .vfh .bd.no{background:var(--wbd);color:var(--wtx)}
@@ -211,10 +211,18 @@ footer{padding:10px 12px 12px;background:var(--pnl);border-top:1px solid var(--l
 .vfd .r{display:flex;gap:7px;margin-bottom:3px}
 .vfd .r i{flex:0 0 auto;font-style:normal;opacity:.7;min-width:52px}
 .vfd .r span{flex:1;color:var(--txt);font-weight:600}
-.vfnote{margin-top:9px;font-size:11.5px;line-height:1.6;color:var(--sub)}
+.vfnote{margin-top:9px;font-size:11.5px;line-height:1.6;color:var(--sub);white-space:pre-line}
 .vf.w .vfnote{color:var(--wtx);opacity:.95}
 .spin{display:inline-block;width:11px;height:11px;border:2px solid var(--line);border-top-color:var(--acc);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-1px}
 @keyframes sp{to{transform:rotate(360deg)}}
+.tag.w{background:var(--wbg);color:var(--wtx)}
+.tag.g{background:var(--ok);color:var(--oktx)}
+.ebtn{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.ebtn button{flex:1;min-width:120px;padding:11px 8px;border-radius:10px;background:var(--wbd);color:var(--wtx);font-size:12.5px;font-weight:800}
+.ebtn button.alt{background:var(--chip2);color:var(--txt);border:1px solid var(--line)}
+.tbar{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.tbar button{flex:1;min-width:104px;padding:9px 7px;border-radius:10px;background:var(--chip);font-size:11.5px;font-weight:700;border:1px solid var(--line);line-height:1.35}
+.tbar button.on{background:var(--acc);color:var(--onacc);border-color:var(--acc)}
 #big{position:fixed;inset:0;background:var(--bigbg);color:var(--bigtx);z-index:99;display:none;flex-direction:column;align-items:center;justify-content:center;padding:26px;text-align:center}
 #big.on{display:flex}
 #big:before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:var(--stripe)}
@@ -276,6 +284,10 @@ footer{padding:10px 12px 12px;background:var(--pnl);border-top:1px solid var(--l
       <span class="cnt" id="cnt"></span>
       <button class="clr" id="clr">🗑 전체 삭제</button>
     </div>
+    <div id="tbar" class="tbar" style="display:none">
+      <button id="vall">🔍 전체 번역검사<br><span style="font-size:9.5px;opacity:.8">저장된 기록 모두</span></button>
+      <button id="vauto">⚙️ 새 번역 자동검사<br><span style="font-size:9.5px;opacity:.8" id="vautos">꺼짐</span></button>
+    </div>
     <div id="log"></div>
   </div>
 
@@ -311,7 +323,7 @@ footer{padding:10px 12px 12px;background:var(--pnl);border-top:1px solid var(--l
     <button id="sd">번역</button>
   </div>
   <div class="st" id="st"></div>
-  <div class="frow"><span class="nn" style="text-align:center">🔍 번역이 맞는지 확인하려면 말풍선의 <b>번역검사</b>를 누르세요 · 🌐 인터넷 필요</span></div>
+  <div class="netnote">🔍 번역이 맞는지 보려면 말풍선의 <b>번역검사</b>를 누르세요 · 🌐 인터넷 필요</div>
 </footer>
 
 <div id="sheet"><div class="sh">
@@ -369,55 +381,61 @@ addEventListener('online',netUI);addEventListener('offline',netUI);netUI();
 $('gobook').onclick=()=>tab('book');
 
 /* ================= 음성 출력 ================= */
-/* iOS 핵심: 마이크(음성인식)를 쓰면 오디오 세션이 '녹음 모드'로 잠겨
-   직후의 TTS가 무음이 된다. → 마이크 사용 시각을 기록해두고
-   워밍업 + 지연 + 재시도로 세션을 복구시킨다. */
-let vs=[],micAt=0,spkWarn='';
-function loadV(){try{vs=window.speechSynthesis?(speechSynthesis.getVoices()||[]):[]}catch(e){vs=[]}}
+/* iOS 무음 원인 3가지를 모두 처리
+   ① 음성인식(마이크) 직후 오디오 세션이 '녹음 모드'로 잠김 → 무음
+   ② speechSynthesis 큐가 pending/paused 로 멈춤
+   ③ getVoices() 가 늦게 채워져 voice 지정 실패                       */
+let vs=[],micAt=0,lastSpk=0;
+function loadV(){try{vs=(window.speechSynthesis&&speechSynthesis.getVoices())||[]}catch(e){vs=[]}return vs}
 loadV();
-if(window.speechSynthesis){speechSynthesis.onvoiceschanged=loadV}
+if(window.speechSynthesis){try{speechSynthesis.onvoiceschanged=loadV}catch(e){}}
 function normL(x){return ((x&&x.lang)||'').replace('_','-').toLowerCase()}
 function pickVoice(c){
   if(!vs.length)loadV();
-  const t=c.toLowerCase(),b=t.split('-')[0];
+  const t=(c||'').toLowerCase(),b=t.split('-')[0];
   return vs.find(x=>normL(x)===t&&x.localService)
       || vs.find(x=>normL(x)===t)
       || vs.find(x=>normL(x).split('-')[0]===b&&x.localService)
-      || vs.find(x=>normL(x).split('-')[0]===b)
-      || null}
-function warm(){/* 무음 발화로 오디오 세션 깨우기 */
-  if(!window.speechSynthesis)return;
-  try{const w=new SpeechSynthesisUtterance('\u200b');w.volume=0;w.rate=1;speechSynthesis.speak(w)}catch(e){}}
-function unlock(){if(!window.speechSynthesis)return;loadV();warm()}
-addEventListener('touchend',unlock,{once:true});
-addEventListener('pointerdown',unlock,{once:true});
-addEventListener('click',unlock,{once:true});
+      || vs.find(x=>normL(x).split('-')[0]===b)||null}
+/* 무음 발화로 오디오 세션 깨우기 */
+function warm(){if(!window.speechSynthesis)return;
+  try{const w=new SpeechSynthesisUtterance('\u200b');w.volume=0;w.rate=1.2;speechSynthesis.speak(w)}catch(e){}}
+/* 사용자 제스처마다 세션 확보 (once 를 쓰지 않는다: 매번 갱신해야 안전) */
+function unlock(){if(!window.speechSynthesis)return;loadV();
+  try{if(speechSynthesis.paused)speechSynthesis.resume()}catch(e){}
+  warm()}
+addEventListener('touchstart',unlock,{passive:true});
+addEventListener('touchend',unlock,{passive:true});
+addEventListener('pointerdown',unlock);
+addEventListener('click',unlock);
 
-function speakNow(t,c,r,retry){
+function speakNow(t,c,r,tryN){
   if(!window.speechSynthesis)return;
   const u=new SpeechSynthesisUtterance(t);
-  u.lang=c;u.rate=r||1;u.volume=1;u.pitch=1;
+  u.lang=c||'ko-KR';u.rate=r||1;u.volume=1;u.pitch=1;
   const v=pickVoice(c);if(v)u.voice=v;
   let started=false;
-  u.onstart=()=>{started=true};
-  u.onerror=()=>{if(!retry){warm();setTimeout(()=>speakNow(t,c,r,1),260)}};
+  u.onstart=()=>{started=true;lastSpk=Date.now()};
+  u.onerror=()=>{if(tryN<2){warm();setTimeout(()=>speakNow(t,c,r,tryN+1),300)}};
   try{speechSynthesis.speak(u)}catch(e){}
-  /* 1초 안에 시작 안 되면 세션이 잠긴 것 → 깨우고 한 번 재시도 */
+  /* 1.1초 안에 시작 못하면 세션이 잠긴 것 → 리셋 후 재시도(최대 2회) */
   setTimeout(()=>{
-    if(started||retry)return;
+    if(started||tryN>=2)return;
     try{speechSynthesis.cancel()}catch(e){}
+    try{if(speechSynthesis.paused)speechSynthesis.resume()}catch(e){}
     warm();
-    setTimeout(()=>speakNow(t,c,r,1),240);
-  },1000)}
+    setTimeout(()=>speakNow(t,c,r,tryN+1),280);
+  },1100)}
 
 function say(t,c,r){
   if(!window.speechSynthesis||!t)return;
   loadV();
   try{if(speechSynthesis.paused)speechSynthesis.resume()}catch(e){}
   try{speechSynthesis.cancel()}catch(e){}
-  /* 마이크 직후에는 오디오 세션 복구 시간을 넉넉히 준다 */
-  const gap=(Date.now()-micAt<4000)?600:80;
-  if(gap>200)warm();
+  /* 마이크를 막 쓴 직후면 세션 복구 시간을 넉넉히 준다 */
+  const fresh=Date.now()-micAt<5000;
+  const gap=fresh?700:90;
+  warm();
   setTimeout(()=>speakNow(t,c,r,0),gap)}
 
 /* ================= 번역 + 캐시 ================= */
@@ -484,11 +502,14 @@ async function tr(t,f,to){
 }
 /* ---- 역번역(되돌려 번역) ---- */
 async function back(t,f,to){try{return await gx(prep(t,f),f,to)}catch(e){return ''}}
+async function mmTr(t,f,to){
+  try{const r=await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(prep(t,f))+'&langpair='+f+'|'+to);
+    if(!r.ok)return '';
+    const d=await r.json();let s=((d.responseData&&d.responseData.translatedText)||'').trim();
+    if(/MYMEMORY|INVALID|QUERY LENGTH|NO QUERY/i.test(s))return '';
+    return s}catch(e){return ''}}
 
-/* ---- 한국어 비교 도우미 ----
-   목적: '정답 판정'이 아니라 참고용 신호.
-   '배가 고파요 vs 배가 아파요'처럼 규칙만으로는 구분 불가한 경우가 있어
-   최종 판단은 사용자가 눈으로 하도록 UI에서 원문/역번역을 나란히 보여준다. */
+/* ---- 한국어 비교 (참고용 신호. 최종 판단은 사용자가 눈으로) ---- */
 const CHO='ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ';
 function cho(t){let o='';for(const ch of (t||'')){const c=ch.charCodeAt(0);
   if(c>=0xAC00&&c<=0xD7A3)o+=CHO[Math.floor((c-0xAC00)/588)];
@@ -504,37 +525,26 @@ function kstem(w){
 function ktok(t){
   return (t||'').replace(/[^\w가-힣]+/g,' ').trim().split(/\s+/)
     .map(w=>({w:w,s:kstem(w)}))
-    .filter(o=>o.s&&KSTOP.indexOf(o.s)<0&&KSTOP.indexOf(o.w)<0)
-    .map(o=>cho(o.s))}
+    .filter(o=>o.s&&KSTOP.indexOf(o.s)<0&&KSTOP.indexOf(o.w)<0).map(o=>cho(o.s))}
 function bgs(s){const S=new Set();for(let i=0;i<s.length-1;i++)S.add(s.substr(i,2));return S}
-function dice(a,b){a=nrm(a);b=nrm(b);
-  if(!a||!b)return 0;if(a==b)return 1;
+function dice(a,b){a=nrm(a);b=nrm(b);if(!a||!b)return 0;if(a==b)return 1;
   const A=bgs(a),B=bgs(b);if(!A.size||!B.size)return 0;
   let n=0;A.forEach(x=>{if(B.has(x))n++});return 2*n/(A.size+B.size)}
-/* 반의어/혼동쌍 — 초성이 닮았어도 뜻이 반대인 경우 강제 감점 */
 const ANTI=[['인','아웃'],['있','없'],['사','팔'],['열','닫'],['켜','끄'],
  ['좋','싫'],['맞','틀'],['전','후'],['앞','뒤'],['위','아래'],['크','작'],['많','적']];
 function antiClash(a,b){a=nrm(a);b=nrm(b);
-  for(const p of ANTI){
-    const x=p[0],y=p[1];
+  for(const p of ANTI){const x=p[0],y=p[1];
     if((a.includes(x)&&b.includes(y)&&!a.includes(y))||(a.includes(y)&&b.includes(x)&&!a.includes(x)))return true}
   return false}
-function headSim(a,b){
-  const A=ktok(a),B=ktok(b);
-  if(!A.length||!B.length)return null;
-  let hit=0;
+function headSim(a,b){const A=ktok(a),B=ktok(b);
+  if(!A.length||!B.length)return null;let hit=0;
   A.forEach(x=>{if(B.some(y=>x==y||(x.length>1&&y.indexOf(x)>=0)||(y.length>1&&x.indexOf(y)>=0)))hit++});
   return hit/Math.max(A.length,B.length)}
-/* 종합 점수(0~1) — 표시용 신호 */
-function sim(a,b){
-  if(!a||!b)return 0;
-  if(nrm(a)==nrm(b))return 1;
+function sim(a,b){if(!a||!b)return 0;if(nrm(a)==nrm(b))return 1;
   const d=dice(a,b),c=dice(cho(a),cho(b)),h=headSim(a,b);
   let s=Math.max(d,c*0.95,h===null?0:h*0.9);
-  if(antiClash(a,b))s=Math.min(s,0.3);
-  return s}
-/* 신호 등급: 2=매우유사 1=비슷 0=확인필요 */
-function grade(a,b){const s=sim(a,b);
+  if(antiClash(a,b))s=Math.min(s,0.3);return s}
+function grade(a,b){if(!b)return 0;const s=sim(a,b);
   if(nrm(a)==nrm(b))return 2;
   if(antiClash(a,b))return 0;
   return s>=.62?2:(s>=.34?1:0)}
@@ -737,14 +747,21 @@ $('sheet').onclick=e=>{if(e.target.id=='sheet'){$('sheet').classList.remove('on'
 
 /* ================= 대화 ================= */
 const log=$('log');
+/* 자동검사: 기본 꺼짐(passive) — 필요할 때만 켠다 */
+let vAuto=localStorage.getItem('vauto')=='1';
+function vAutoUI(){$('vauto').classList.toggle('on',vAuto);
+  $('vautos').textContent=vAuto?'켜짐 (자동)':'꺼짐'}
+$('vauto').onclick=()=>{vAuto=!vAuto;localStorage.setItem('vauto',vAuto?'1':'0');vAutoUI()};
+vAutoUI();
 function getH(){try{return JSON.parse(localStorage.getItem('hist'))||[]}catch(e){return[]}}
 function setH(a){localStorage.setItem('hist',JSON.stringify(a.slice(-250)))}
 
 function bubble(e){
   const b=document.createElement('div');
   b.className='bub'+(e.dir=='me'?' me':'');
-  const LG=L[e.lang]||L[cur];
-  const code=e.dir=='me'?LG.c:'ko-KR';
+  const LG=L[e.lang]||L[cur];              /* 저장 당시 언어로 읽어야 정확 */
+  const code=e.dir=='me'?LG.c:'ko-KR';     /* 번역 결과 언어 */
+  const scode=e.dir=='me'?'ko-KR':LG.c;    /* 원문 언어 */
   b.innerHTML='<button class="xb">✕</button><div class="src"></div><div class="out"></div>'+
    '<div class="acts"><button class="chip a1">🔊 다시</button><button class="chip a2">🐢 느리게</button>'+
    '<button class="chip a5"></button>'+
@@ -755,8 +772,6 @@ function bubble(e){
   b.querySelector('.out').textContent=e.out;
   b.querySelector('.a1').onclick=()=>say(e.out,code,1);
   b.querySelector('.a2').onclick=()=>say(e.out,code,.55);
-  /* 원문 듣기 */
-  const scode=e.dir=='me'?'ko-KR':LG.c;
   const a5=b.querySelector('.a5');
   a5.textContent=(e.dir=='me'?'🔊 한국어 원문':'🔊 '+LG.f+' 원문');
   a5.onclick=()=>say(e.src,scode,1);
@@ -768,60 +783,50 @@ function bubble(e){
       btn.classList.add('on');btn.textContent='✅ '+c;
       localStorage.setItem('lastcat',c);fillSel(c)})};
   b.querySelector('.xb').onclick=()=>{const a=getH();const i=a.findIndex(x=>x.id==e.id);if(i>-1)a.splice(i,1);setH(a);renderLog()};
-
-  /* ===== 번역검사 ===== */
-  const holder=document.createElement('div');
-  b.appendChild(holder);
+  /* ── 번역검사: 기록 하나하나에 버튼 ── */
+  const holder=document.createElement('div');b.appendChild(holder);
   const btn6=b.querySelector('.a6');
-  function paint(v){renderVerify(holder,btn6,e,LG,v)}
-  if(e.vf)paint(e.vf);            /* 이전에 검사한 결과 복원 */
+  const paint=v=>renderVerify(holder,btn6,e,LG,v);
+  if(e.vf)paint(e.vf);                     /* 예전에 검사한 결과 복원 */
   btn6.onclick=()=>{
-    if(e.vf){                     /* 이미 있으면 접기/펼치기 */
+    if(e.vf){                              /* 접기/펼치기 */
       if(holder.firstChild){holder.innerHTML='';btn6.classList.remove('on');btn6.textContent='🔍 번역검사'}
       else paint(e.vf);
       return}
     runVerify(holder,btn6,e,LG,paint)};
   return b}
 
-/* ---- 검사 결과 그리기 ---- */
+/* ---- 검사 결과 표시 ---- */
 function renderVerify(holder,btn,e,LG,v){
   holder.innerHTML='';
   btn.classList.add('on');btn.textContent='🔍 검사결과';
-  const g=v.g==null?grade(e.src,v.b1):v.g;
+  const base=e.dir=='me'?e.src:e.out;
+  const g=(v.g==null?grade(base,v.b1):v.g);
   const d=document.createElement('div');
   d.className='vf '+(g==2?'g':(g==0?'w':''));
   const badge=g==2?'<span class="bd ok">뜻이 잘 통해요</span>'
             :g==1?'<span class="bd">대체로 통해요</span>'
-            :'<span class="bd no">확인이 필요해요</span>';
-  d.innerHTML=
-   '<div class="vfh">🔍 번역검사 '+badge+'</div>'+
-   '<div class="vfq">① 내가 말한 한국어</div><div class="vfa q1"></div>'+
-   '<div class="vfq">② '+LG.f+' 번역 → 다시 한국어로 되돌린 결과</div><div class="vfb q2"></div>'+
-   '<div class="vfd"></div>'+
-   '<div class="vfnote"></div>'+
+                 :'<span class="bd no">확인이 필요해요</span>';
+  d.innerHTML='<div class="vfh">🔍 번역검사 '+badge+'</div>'+
+   '<div class="vfq">① 원래 한국어</div><div class="vfa q1"></div>'+
+   '<div class="vfq">② '+LG.f+' 번역을 다시 한국어로 되돌린 결과</div><div class="vfb q2"></div>'+
+   '<div class="vfd"></div><div class="vfnote"></div>'+
    '<div class="vfx"><button class="rd">🔊 되돌린 문장 듣기</button>'+
-   '<button class="bg2">🔍 크게 비교</button>'+
-   '<button class="rf">🔄 다시 검사</button></div>';
-  d.querySelector('.q1').textContent=e.src;
-  d.querySelector('.q2').textContent=v.b1||'(실패)';
-  /* 다른 엔진 결과가 있으면 함께 (교차 확인) */
+   '<button class="bg2">🔍 크게 비교</button><button class="rf">🔄 다시 검사</button></div>';
+  d.querySelector('.q1').textContent=base;
+  d.querySelector('.q2').textContent=v.b1||'(가져오지 못했어요)';
   const dd=d.querySelector('.vfd');
-  if(v.b2&&nrm(v.b2)!=nrm(v.b1)){
-    const r=document.createElement('div');r.className='r';
-    r.innerHTML='<i>다른 번역기</i><span></span>';
-    r.querySelector('span').textContent=v.b2;dd.appendChild(r)}
-  if(v.alt&&nrm(v.alt)!=nrm(e.out)){
-    const r=document.createElement('div');r.className='r';
-    r.innerHTML='<i>대안 표현</i><span></span>';
-    r.querySelector('span').textContent=v.alt;dd.appendChild(r)}
+  if(v.b2&&nrm(v.b2)!=nrm(v.b1)){const r=document.createElement('div');r.className='r';
+    r.innerHTML='<i>다른 번역기</i><span></span>';r.querySelector('span').textContent=v.b2;dd.appendChild(r)}
+  if(v.alt&&nrm(v.alt)!=nrm(e.out)){const r=document.createElement('div');r.className='r';
+    r.innerHTML='<i>대안 표현</i><span></span>';r.querySelector('span').textContent=v.alt;dd.appendChild(r)}
   if(!dd.children.length)dd.remove();
   d.querySelector('.vfnote').textContent = g==2
-    ? '②가 원래 뜻과 같다면 그대로 보여주셔도 됩니다.'
-    : g==1
-    ? '②를 읽어보세요. 뜻이 맞으면 괜찮습니다. 어색하면 더 짧게 말해보세요.'
-    : '⚠️ ②가 ①과 다르게 느껴지면 다르게 전달된 것입니다.\n짧고 단순한 문장으로 바꿔 다시 말해보세요. (예: "저는 새우 알레르기가 있어요")';
+   ? '②가 원래 뜻과 같으면 그대로 보여주셔도 됩니다.'
+   : g==1 ? '②를 읽어보세요. 뜻이 맞으면 괜찮습니다. 어색하면 더 짧게 말해보세요.'
+   : '⚠️ ②가 ①과 다르게 느껴지면 다르게 전달된 것입니다.\n짧고 단순한 문장으로 바꿔 다시 말해보세요.';
   d.querySelector('.rd').onclick=()=>say(v.b1,'ko-KR',1);
-  d.querySelector('.bg2').onclick=()=>big(v.b1||'',e.src);
+  d.querySelector('.bg2').onclick=()=>big(v.b1||'',base);
   d.querySelector('.rf').onclick=()=>{
     const a=getH(),i=a.findIndex(x=>x.id==e.id);
     if(i>-1){delete a[i].vf;setH(a)}
@@ -829,62 +834,71 @@ function renderVerify(holder,btn,e,LG,v){
     runVerify(holder,btn,e,LG,v2=>renderVerify(holder,btn,e,LG,v2))};
   holder.appendChild(d)}
 
-/* ---- 검사 실행: 결과를 한국어로 되돌려 대조 ---- */
-async function runVerify(holder,btn,e,LG,done){
-  if(!navigator.onLine){
-    holder.innerHTML='<div class="vf w"><div class="vfh">🔍 번역검사</div>'+
-      '<div class="vfnote">📵 인터넷이 필요합니다. 연결 후 다시 눌러주세요.</div></div>';
-    return}
-  const old=btn.textContent;
-  btn.textContent='검사 중…';btn.classList.add('on');
-  holder.innerHTML='<div class="vf"><div class="vfh"><span class="spin"></span> 되돌려 번역하는 중…</div></div>';
-  const F=LG.s;                       /* 현지어 코드 */
-  const isMe=e.dir=='me';
-  /* 내가 말함: ko→F 였으므로 F→ko 로 되돌림
-     상대가 말함: F→ko 였으므로 ko→F 로 되돌린 뒤, 다시 ko로 (의미 유지 확인) */
+/* ---- 검사 계산 (UI 없이 값만) ---- */
+async function calcVerify(e,LG){
+  const F=LG.s,isMe=e.dir=='me';
   let b1='',b2='',alt='';
   try{
     if(isMe){
-      /* 내가 한국어로 말함 → 현지어(e.out) 를 다시 한국어로 되돌린다 */
-      b1=await back(e.out,F,'ko');                 /* 구글로 되돌림 */
-      b2=await mmTr(e.out,F,'ko');                 /* 다른 번역기로도 되돌림(교차확인) */
-      alt=await back(e.src,'ko',F);                /* 참고: 대안 표현 */
+      b1=await back(e.out,F,'ko');
+      b2=await mmTr(e.out,F,'ko');
+      alt=await back(e.src,'ko',F);
     }else{
-      /* 상대가 현지어로 말함 → 한국어 결과(e.out)를 현지어로 보냈다 되돌린다 */
       const round=await back(e.out,'ko',F);
       if(round){b1=await back(round,F,'ko');alt=round}
-      /* 교차확인: 상대 원문을 다른 번역기로 한국어 번역 */
       b2=await mmTr(e.src,F,'ko');
     }
   }catch(err){}
-  /* 되돌리기가 실패하면 최소한 다른 번역기 결과라도 보여준다 */
   if(!b1&&b2){b1=b2;b2=''}
+  if(!b1)return null;
+  const base=isMe?e.src:e.out;
+  return {b1:b1,b2:b2||'',alt:alt||'',g:grade(base,b1)}}
+
+/* ---- 검사 실행 ---- */
+async function runVerify(holder,btn,e,LG,done){
+  if(!navigator.onLine){
+    holder.innerHTML='<div class="vf w"><div class="vfh">🔍 번역검사</div>'+
+      '<div class="vfnote">📵 인터넷이 필요합니다. 연결 후 다시 눌러주세요.</div></div>';return}
+  const old=btn.textContent;
+  btn.textContent='검사 중…';btn.classList.add('on');
+  holder.innerHTML='<div class="vf"><div class="vfh"><span class="spin"></span> 되돌려 번역하는 중…</div></div>';
+  const v=await calcVerify(e,LG);
   btn.textContent=old;
-  if(!b1&&!b2){
+  if(!v){
     holder.innerHTML='<div class="vf w"><div class="vfh">🔍 번역검사</div>'+
       '<div class="vfnote">번역 서버에 연결하지 못했어요. 잠시 후 다시 시도해 주세요.</div></div>';
     btn.classList.remove('on');return}
-  const base=isMe?e.src:e.out;                        /* 비교 기준 = 원래 한국어 */
-  const v={b1:b1,b2:b2||'',alt:alt||'',g:grade(base,b1)};
-  /* 저장 */
   const a=getH(),i=a.findIndex(x=>x.id==e.id);
   if(i>-1){a[i].vf=v;setH(a)}
-  e.vf=v;
-  done(v)}
+  e.vf=v;done(v)}
 
-/* ---- MyMemory 단독 호출 (교차 확인용) ---- */
-async function mmTr(t,f,to){
-  try{const r=await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(prep(t,f))+'&langpair='+f+'|'+to);
-    if(!r.ok)return '';
-    const d=await r.json();let s=((d.responseData&&d.responseData.translatedText)||'').trim();
-    if(/MYMEMORY|INVALID|QUERY LENGTH|NO QUERY/i.test(s))return '';
-    return s}catch(e){return ''}}
+/* ---- 전체 일괄 검사 (예전 기록 포함) ---- */
+$('vall').onclick=async()=>{
+  if(!navigator.onLine){$('st').textContent='📵 인터넷이 필요합니다';return}
+  const all=getH(),list=all.filter(x=>x.lang==cur&&!x.vf);
+  if(!list.length){$('st').textContent='✅ 검사할 새 기록이 없어요 (이미 다 검사됨)';
+    setTimeout(()=>$('st').textContent='',2500);return}
+  if(!confirm(L[cur].n+' 기록 '+list.length+'건을 번역검사할까요?\n\n인터넷을 씁니다 (1건당 약 0.1MB)\n결과는 저장되어 다시 열어도 남습니다.'))return;
+  const btn=$('vall');btn.classList.add('on');
+  for(let k=0;k<list.length;k++){
+    btn.innerHTML='🔍 검사 중… '+(k+1)+'/'+list.length;
+    const e=list[k],LG=L[e.lang]||L[cur];
+    const v=await calcVerify(e,LG);
+    if(v){const a=getH(),i=a.findIndex(x=>x.id==e.id);if(i>-1){a[i].vf=v;setH(a)}}
+  }
+  btn.classList.remove('on');
+  btn.innerHTML='🔍 전체 번역검사<br><span style="font-size:9.5px;opacity:.8">저장된 기록 모두</span>';
+  renderLog();
+  $('st').textContent='✅ '+list.length+'건 검사 완료';
+  setTimeout(()=>$('st').textContent='',3000)};
 
 function renderLog(){
   const a=getH().filter(x=>x.lang==cur);log.innerHTML='';
   $('hint').style.display=a.length?'none':'block';
   $('lbar').style.display=a.length?'flex':'none';
-  $('cnt').textContent=L[cur].f+' '+L[cur].n+' 기록 '+a.length+'개 · 💾 오프라인 재사용 가능';
+  $('tbar').style.display=a.length?'flex':'none';
+  const un=a.filter(x=>!x.vf).length;
+  $('cnt').textContent=L[cur].f+' '+L[cur].n+' 기록 '+a.length+'개'+(un?' · 미검사 '+un:' · 전부 검사됨');
   a.forEach(e=>log.appendChild(bubble(e)));
   log.parentElement.scrollTop=1e6}
 
@@ -893,7 +907,7 @@ $('clr').onclick=()=>{
   if(confirm(L[cur].n+' 기록 '+n+'개를 모두 삭제할까요?\n(문구집에 저장한 문장과 다른 언어 기록은 그대로 남습니다)')){
     setH(a.filter(x=>x.lang!=cur));renderLog()}};
 
-/* ---- 오인식 경고 버블 ---- */
+/* ---- 오인식 경고 ---- */
 function misBubble(text,dir){
   const pb=document.createElement('div');
   pb.className='bub err'+(dir=='me'?' me':'');
@@ -901,8 +915,7 @@ function misBubble(text,dir){
     '<div class="ebtn"><button class="rt">🎙 다시 말하기</button><button class="alt fx">🔤 그래도 번역</button></div>';
   pb.querySelector('.out').textContent=
     '⚠️ '+L[cur].n+'가 아니라 한국어 소리로 인식됐어요.\n\n인식된 내용: 「'+text+'」\n\n'+
-    '👉 아이폰 → 설정 → 일반 → 키보드 → 받아쓰기 언어에서\n   '+L[cur].f+' '+L[cur].n+'를 켜주세요.\n'+
-    '   (켜져 있으면 조금 더 크고 또박또박 말해주세요)';
+    '👉 아이폰 → 설정 → 일반 → 키보드 → 받아쓰기 언어에서\n   '+L[cur].f+' '+L[cur].n+'를 켜주세요.';
   pb.querySelector('.xb').onclick=()=>pb.remove();
   pb.querySelector('.rt').onclick=()=>{pb.remove();listen(dir)};
   pb.querySelector('.fx').onclick=()=>{pb.remove();run(text,dir,true)};
@@ -913,7 +926,6 @@ async function run(text,dir,force){
   $('hint').style.display='none';
   const f=dir=='me'?'ko':L[cur].s,t2=dir=='me'?L[cur].s:'ko';
   const code=dir=='me'?L[cur].c:'ko-KR';
-  /* 상대가 말했는데 한국어 글자로 인식된 경우 = 받아쓰기 언어 미설정 */
   if(dir=='you'&&!force&&!scriptOK(text,L[cur].s)&&scriptOf(text)=='ko'){misBubble(text,dir);return}
   const pb=document.createElement('div');
   pb.className='bub wait'+(dir=='me'?' me':'');
@@ -922,10 +934,15 @@ async function run(text,dir,force){
   log.appendChild(pb);log.parentElement.scrollTop=1e6;
   try{
     const o=await tr(text,f,t2);
+    const rec={id:Date.now()+''+Math.random().toString(36).slice(2,6),
+      lang:cur,dir:dir,src:text,out:o};
+    /* 자동검사가 켜져 있을 때만 곧바로 검사 */
+    if(vAuto&&navigator.onLine){
+      pb.querySelector('.out').textContent='번역검사 중…';
+      const v=await calcVerify(rec,L[cur]);if(v)rec.vf=v}
     pb.remove();
-    const a=getH();
-    a.push({id:Date.now()+''+Math.random().toString(36).slice(2,6),lang:cur,dir:dir,src:text,out:o});
-    setH(a);renderLog();say(o,code,1)}
+    const a=getH();a.push(rec);setH(a);renderLog();
+    say(o,code,1)}
   catch(e){pb.className='bub err';
     pb.innerHTML='<button class="xb">✕</button><div class="out"></div>';
     pb.querySelector('.out').textContent='⚠️ '+e.message;
@@ -1108,7 +1125,7 @@ $('mtest').onclick=async()=>{
   catch(e){alert('❌ 실패\n\n'+e.message)}
   $('mtest').textContent='🔧 번역 서버 연결 테스트'};
 
-/* ================= 음성 진단 ================= */
+/* ================= 음성(TTS) 진단 ================= */
 $('vtest').onclick=()=>{
   if(!window.speechSynthesis){alert('❌ 이 브라우저는 음성 읽기를 지원하지 않습니다.');return}
   loadV();
@@ -1118,17 +1135,13 @@ $('vtest').onclick=()=>{
   let msg='🔊 '+L[cur].f+' '+L[cur].n+' 음성 진단\n\n';
   msg+='설치된 목소리 총 '+vs.length+'개\n';
   msg+=L[cur].n+' 목소리: '+(list.length?list.length+'개\n'+list.slice(0,6).join('\n'):'❌ 없음')+'\n\n';
-  if(!vs.length){
-    msg+='⚠️ 목소리 목록이 비어 있습니다.\n화면을 한 번 탭한 뒤 다시 시도하거나,\n브라우저를 완전히 종료 후 다시 열어주세요.'}
-  else if(!list.length){
-    msg+='⚠️ 이 기기에 '+L[cur].n+' 음성이 없습니다.\n\n👉 설정 → 손쉬운 사용 → 말하기 콘텐츠\n   → 음성 → '+L[cur].n+' 추가(다운로드)'}
-  else{
-    msg+='✅ 사용 가능: '+(v?v.name:'기본')+'\n\n확인을 누르면 테스트 문장을 읽습니다.'}
+  if(!vs.length)msg+='⚠️ 목소리 목록이 비어 있습니다.\n화면을 한 번 탭한 뒤 다시 시도하거나\n브라우저를 완전히 종료 후 다시 열어주세요.';
+  else if(!list.length)msg+='⚠️ 이 기기에 '+L[cur].n+' 음성이 없습니다.\n\n👉 설정 → 손쉬운 사용 → 말하기 콘텐츠\n   → 음성 → '+L[cur].n+' 추가(다운로드)';
+  else msg+='✅ 사용 가능: '+(v?v.name:'기본')+'\n\n확인을 누르면 테스트 문장을 읽습니다.';
   alert(msg);
-  if(list.length||vs.length){
-    const t=cur=='en'?'Hello, this is a sound test.':cur=='ja'?'これは音声テストです。':
-            cur=='it'?'Questa è una prova audio.':cur=='es'?'Esta es una prueba de sonido.':'Este é um teste de som.';
-    micAt=0;say(t,c,1)}};
+  const t=cur=='en'?'Hello, this is a sound test.':cur=='ja'?'これは音声テストです。':
+          cur=='it'?'Questa è una prova audio.':cur=='es'?'Esta es una prueba de sonido.':'Este é um teste de som.';
+  micAt=0;say(t,c,1)};
 
 /* ================= 크게 보여주기 ================= */
 function big(m,s){$('bt').textContent=m;$('bs').textContent=s||'';$('big').classList.add('on')}
